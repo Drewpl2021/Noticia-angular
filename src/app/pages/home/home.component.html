@@ -1,0 +1,165 @@
+<main class="container" style="padding:1rem 0 2rem 0">
+  <div class="grid">
+    <!-- ====== FEED (izquierda) ====== -->
+    <section class="mosaic" *ngIf="news$ | async as data">
+      <!-- ====== MOSAICO ====== -->
+      <!-- Lead grande -->
+      <a class="tile lead"
+         *ngIf="data.content[0] as n"
+         [routerLink]="['/detalle', n.id]" [title]="n.title">
+        <img [src]="n.imageUrl || 'assets/placeholder-16x9.jpg'" [alt]="n.title">
+        <div class="shade"></div>
+        <div class="overlay">
+          <span class="pill">{{ n.categories?.[0] || 'General' }}</span>
+          <h2 class="title">{{ n.title }}</h2>
+          <div class="meta-row">{{ n.publishedAt | date:'dd MMM yyyy' }}</div>
+        </div>
+      </a>
+
+      <!-- Medianas -->
+      <a class="tile mid top"
+         *ngIf="data.content[1] as n"
+         [routerLink]="['/detalle', n.id]" [title]="n.title">
+        <img [src]="n.imageUrl || 'assets/placeholder-16x9.jpg'" [alt]="n.title">
+        <div class="shade"></div>
+        <div class="overlay">
+          <span class="pill">{{ n.categories?.[0] || 'General' }}</span>
+          <h3 class="title s">{{ n.title }}</h3>
+        </div>
+      </a>
+
+      <a class="tile mid bottom"
+         *ngIf="data.content[2] as n"
+         [routerLink]="['/detalle', n.id]" [title]="n.title">
+        <img [src]="n.imageUrl || 'assets/placeholder-16x9.jpg'" [alt]="n.title">
+        <div class="shade"></div>
+        <div class="overlay">
+          <span class="pill">{{ n.categories?.[0] || 'General' }}</span>
+          <h3 class="title s">{{ n.title }}</h3>
+        </div>
+      </a>
+
+      <!-- Pequeñas -->
+      <a class="tile small s1"
+         *ngIf="data.content[3] as n"
+         [routerLink]="['/detalle', n.id]" [title]="n.title">
+        <img [src]="n.imageUrl || 'assets/placeholder-16x9.jpg'" [alt]="n.title">
+        <div class="shade"></div>
+        <div class="overlay">
+          <span class="pill">{{ n.categories?.[0] || 'General' }}</span>
+          <h3 class="title xs">{{ n.title }}</h3>
+        </div>
+      </a>
+
+      <a class="tile small s2"
+         *ngIf="data.content[4] as n"
+         [routerLink]="['/detalle', n.id]" [title]="n.title">
+        <img [src]="n.imageUrl || 'assets/placeholder-16x9.jpg'" [alt]="n.title">
+        <div class="shade"></div>
+        <div class="overlay">
+          <span class="pill">{{ n.categories?.[0] || 'General' }}</span>
+          <h3 class="title xs">{{ n.title }}</h3>
+        </div>
+      </a>
+
+      <a class="tile small s3"
+         *ngIf="data.content[5] as n"
+         [routerLink]="['/detalle', n.id]" [title]="n.title">
+        <img [src]="n.imageUrl || 'assets/placeholder-16x9.jpg'" [alt]="n.title">
+        <div class="shade"></div>
+        <div class="overlay">
+          <span class="pill">{{ n.categories?.[0] || 'General' }}</span>
+          <h3 class="title xs">{{ n.title }}</h3>
+        </div>
+      </a>
+
+      <!-- ====== PAGINACIÓN ====== -->
+      <nav class="pagination" style="grid-column: 1 / -1; margin-top:.5rem">
+        <button class="btn" (click)="firstPage()" [disabled]="page() === 0">« Primero</button>
+        <button class="btn" (click)="prevPage()"  [disabled]="page() === 0">‹ Anterior</button>
+
+        <ng-container *ngFor="let p of pageRange()">
+          <button class="btn num" [class.is-active]="p === page()" (click)="goTo(p)">
+            {{ p + 1 }}
+          </button>
+        </ng-container>
+
+        <button class="btn" (click)="nextPage()" [disabled]="page() >= totalPages() - 1">Siguiente ›</button>
+        <button class="btn" (click)="lastPage()" [disabled]="page() >= totalPages() - 1">Último »</button>
+
+        <span class="meta" style="margin-left:.5rem">
+      Página {{ page() + 1 }} de {{ totalPages() }}
+    </span>
+      </nav>
+
+      <div class="meta" *ngIf="data.totalElements === 0">No hay noticias.</div>
+    </section>
+
+
+
+
+    <!-- ====== SIDEBAR (derecha) ====== -->
+    <aside class="sidebar" aria-label="Barra lateral">
+      <!-- Categorías con filtro -->
+      <div class="widget">
+        <h4>Categorías</h4>
+        <div class="row">
+          <!-- “Todas” -->
+          <button type="button"
+                  class="tab"
+                  [class.active]="selectedCategory() === null"
+                  (click)="selectCategory(null)">
+            Todas
+          </button>
+
+          <!-- Dinámicas -->
+          <button type="button"
+                  class="tab"
+                  *ngFor="let c of (categories$ | async)"
+                  [class.active]="selectedCategory() === c"
+                  (click)="selectCategory(c)">
+            {{ c }}
+          </button>
+        </div>
+      </div>
+
+      <!-- Hora actual -->
+      <div class="widget clock">
+        <h4>Hora actual</h4>
+        <p class="clock-text">
+          {{ now$ | async | date:'fullDate' }} — {{ now$ | async | date:'HH:mm:ss' }}
+        </p>
+      </div>
+
+    </aside>
+
+  </div>
+</main>
+
+<!-- ====== FOOTER ====== -->
+<footer>
+  <div class="container footer-inner">
+    <div>
+      <h3>Noticias360</h3>
+      <p class="muted">Periodismo claro y directo. Cobertura 24/7 con enfoque local y global.</p>
+    </div>
+    <div>
+      <h4>Secciones</h4>
+      <ul style="list-style:none;padding:0;margin:.5rem 0 0 0;display:grid;gap:.4rem">
+        <li><a href="#" class="muted">Política</a></li>
+        <li><a href="#" class="muted">Economía</a></li>
+        <li><a href="#" class="muted">Deportes</a></li>
+        <li><a href="#" class="muted">Tecnología</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Legal</h4>
+      <ul style="list-style:none;padding:0;margin:.5rem 0 0 0;display:grid;gap:.4rem">
+        <li><a href="#" class="muted">Términos</a></li>
+        <li><a href="#" class="muted">Privacidad</a></li>
+        <li><a href="#" class="muted">Contacto</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="credits">© 2025 Noticias360 — Mas cerca de ti</div>
+</footer>

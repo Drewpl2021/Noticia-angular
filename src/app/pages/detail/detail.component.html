@@ -1,0 +1,86 @@
+<br>
+<main class="container detail-grid" *ngIf="item$ | async as n">
+  <!-- Columna principal -->
+  <article class="detail">
+    <a routerLink="/" class="meta" style="display:inline-block;margin-bottom:1rem">← Volver</a>
+
+    <h1 class="title">{{ n.title }}</h1>
+    <div class="meta">
+      {{ (n.categories?.[0] || 'General') }} •
+      {{ n.publishedAt | date:'dd MMM yyyy' }} •
+      {{ n.author || 'Redacción' }}
+    </div>
+
+    <img *ngIf="n.imageUrl" class="hero" [src]="n.imageUrl" [alt]="n.title">
+
+    <!-- lead en negrita -->
+    <p class="lead" *ngIf="n.lead"><strong>{{ n.lead }}</strong></p>
+
+    <!-- contenido -->
+    <div class="content" *ngIf="(n.content || '').includes('<')" [innerHTML]="n.safeContent"></div>
+    <div class="content as-text" *ngIf="!(n.content || '').includes('<')" [textContent]="n.content"></div>
+
+    <!-- tags -->
+    <div class="tags" *ngIf="n.tags?.length">
+      <span class="tag">Etiquetas</span>
+      <span class="chip" *ngFor="let tag of n.tags">{{ tag }}</span>
+    </div>
+
+    <!-- fuente -->
+    <p *ngIf="n.url" class="meta" style="margin-top:1rem">
+      Fuente: <a [href]="n.url" target="_blank" rel="noopener">Ver artículo original</a>
+    </p>
+  </article>
+
+  <aside class="sidebar" *ngIf="more$ | async as more">
+    <h3 class="more-title">Más noticias</h3>
+    <div class="more-list">
+      <!-- 👇 Aquí declaramos m -->
+      <a class="more-card"
+         *ngFor="let m of more; trackBy: trackById"
+         [routerLink]="['/detalle', m.id]"
+         [title]="m.title">
+        <div class="thumb-wrap">
+          <img [src]="m.imageUrl || 'assets/placeholder-4x3.jpg'" [alt]="m.title">
+        </div>
+        <div class="info">
+          <div class="meta tiny">
+            {{ (m.categories?.[0] || 'General') }} • {{ m.publishedAt | date:'dd MMM' }}
+          </div>
+          <div class="headline clamp-2">{{ m.title }}</div>
+        </div>
+      </a>
+
+    </div>
+  </aside>
+
+
+
+</main>
+<!-- ====== FOOTER ====== -->
+<footer>
+  <div class="container footer-inner">
+    <div>
+      <h3>Noticias360</h3>
+      <p class="muted">Periodismo claro y directo. Cobertura 24/7 con enfoque local y global.</p>
+    </div>
+    <div>
+      <h4>Secciones</h4>
+      <ul style="list-style:none;padding:0;margin:.5rem 0 0 0;display:grid;gap:.4rem">
+        <li><a href="#" class="muted">Política</a></li>
+        <li><a href="#" class="muted">Economía</a></li>
+        <li><a href="#" class="muted">Deportes</a></li>
+        <li><a href="#" class="muted">Tecnología</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Legal</h4>
+      <ul style="list-style:none;padding:0;margin:.5rem 0 0 0;display:grid;gap:.4rem">
+        <li><a href="#" class="muted">Términos</a></li>
+        <li><a href="#" class="muted">Privacidad</a></li>
+        <li><a href="#" class="muted">Contacto</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="credits">© 2025 Noticias360 — Mas cerca de ti</div>
+</footer>
