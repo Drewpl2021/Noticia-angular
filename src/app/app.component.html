@@ -4,8 +4,84 @@
       <div class="logo" aria-hidden="true"></div>
       <h1>Noticias360</h1>
     </div>
-      <button class="btn" (click)="toggleTheme()">{{ themeLabel }}</button>
+
+    <div class="nav-actions">
+      <!-- Botón de tema -->
+      <button class="btn" (click)="toggleTheme()">
+        {{ themeLabel }}
+      </button>
+
+      <!-- Si NO está logueado → botón Iniciar sesión -->
+      <button
+        class="btn login-btn"
+        *ngIf="!isLoggedIn()"
+        (click)="goLogin()">
+        Iniciar sesión
+      </button>
+
+      <!-- Si SÍ está logueado → nombre + menú -->
+      <div class="user-wrapper" *ngIf="isLoggedIn() && user() as u">
+        <button
+          type="button"
+          class="btn user-btn"
+          (click)="toggleUserMenu()">
+          {{ u.name }} {{ u.lastName }}
+          <span class="chevron">⌄</span>
+        </button>
+
+        <!-- Menú desplegable -->
+        <div class="user-menu" *ngIf="showUserMenu()">
+          <button type="button" (click)="goProfile()">Perfil</button>
+          <button type="button" (click)="logout()">Cerrar sesión</button>
+        </div>
+      </div>
+    </div>
   </div>
 </header>
 
-<router-outlet></router-outlet>
+<main *ngIf="isLoggedIn(); else publicLayout">
+  <div class="app-layout">
+    <!-- BARRA LATERAL -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <span class="sidebar-title">Panel</span>
+      </div>
+
+      <nav class="sidebar-nav">
+        <button class="sidebar-item" routerLink="/">
+          🏠 Inicio
+        </button>
+
+        <button class="sidebar-item" routerLink="/">
+          Noticias inteligentes
+        </button>
+
+        <button class="sidebar-item" routerLink="/admin" *ngIf="auth.isAdmin()">
+          📰 Gestión de noticias
+        </button>
+
+        <button class="sidebar-item" routerLink="/rol" *ngIf="auth.isAdmin()">
+          👤 Gestión de usuarios
+        </button>
+
+        <button class="sidebar-item" routerLink="/scrapper" *ngIf="auth.isAdmin()">
+          🧺 Recolección de Noticias
+        </button>
+
+
+      </nav>
+    </aside>
+
+    <!-- CONTENIDO PRINCIPAL -->
+    <section class="app-content">
+      <router-outlet></router-outlet>
+    </section>
+  </div>
+</main>
+
+<ng-template #publicLayout>
+  <main>
+    <router-outlet></router-outlet>
+  </main>
+</ng-template>
+

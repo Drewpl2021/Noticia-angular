@@ -1,0 +1,116 @@
+<section class="scrapper-page">
+  <h2>Gestión de páginas para scrapper</h2>
+  <p class="subtitle">
+    Registra las páginas desde donde se extraerán las noticias.
+  </p>
+
+  <!-- Mensaje de error -->
+  <div *ngIf="errorMsg" class="alert-error">
+    {{ errorMsg }}
+  </div>
+
+  <!-- Formulario compacto arriba -->
+  <div class="scrapper-form-card">
+    <h3>{{ editing ? 'Editar página' : 'Nueva página' }}</h3>
+
+    <form [formGroup]="scrapperForm" (ngSubmit)="save()">
+      <div class="form-row">
+        <div class="form-group">
+          <label>Logo (URL de imagen)</label>
+          <input
+            type="text"
+            formControlName="logoUrl"
+            placeholder="https://.../logo.png"
+          />
+          <small *ngIf="logoUrl?.invalid && logoUrl?.touched" class="error">
+            El logo es obligatorio.
+          </small>
+        </div>
+
+        <div class="form-group">
+          <label>Nombre de la página</label>
+          <input
+            type="text"
+            formControlName="nombrePagina"
+            placeholder="RPP Noticias"
+          />
+          <small *ngIf="nombrePagina?.invalid && nombrePagina?.touched" class="error">
+            El nombre es obligatorio.
+          </small>
+        </div>
+
+        <div class="form-group">
+          <label>URL del sitio</label>
+          <input
+            type="text"
+            formControlName="url"
+            placeholder="https://rpp.pe/"
+          />
+          <small *ngIf="urlCtrl?.invalid && urlCtrl?.touched" class="error">
+            La URL es obligatoria.
+          </small>
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button type="submit" class="btn primary" [disabled]="loading">
+          {{ editing ? 'Guardar cambios' : 'Crear página' }}
+        </button>
+
+        <button type="button" class="btn" (click)="startCreate()" [disabled]="loading">
+          Limpiar
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Loader simple -->
+  <p *ngIf="loading" class="loading-text">Cargando...</p>
+
+  <!-- Grid de cards -->
+  <div class="cards-grid">
+    <article class="scrapper-card" *ngFor="let s of scrappers">
+      <div class="scrapper-card-header">
+        <img
+          class="logo-img"
+          [src]="s.logoUrl"
+          [alt]="s.nombrePagina"
+          (error)="onLogoError($event)"
+        />
+
+
+        <div class="card-title">
+          <h4>{{ s.nombrePagina }}</h4>
+          <a
+            [href]="s.url"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="site-link"
+          >
+            {{ s.url }}
+          </a>
+        </div>
+      </div>
+
+      <div class="card-actions">
+        <button type="button" class="btn-scrape" (click)="onScrape(s.url)">
+          🕵️‍♂️ Scrapear
+        </button>
+
+        <button type="button" class="btn-edit" (click)="startEdit(s)">
+          ✏️ Editar
+        </button>
+
+        <button type="button" class="btn-delete" (click)="delete(s)">
+          🗑️ Eliminar
+        </button>
+      </div>
+
+
+    </article>
+
+    <p *ngIf="!loading && scrappers.length === 0" class="empty-text">
+      Aún no has registrado páginas para el scrapper.
+    </p>
+  </div>
+</section>

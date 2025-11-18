@@ -1,0 +1,232 @@
+.scrapper-page {
+  padding: 1.5rem 1rem 2rem;
+}
+
+.scrapper-page h2 {
+  margin: 0 0 .25rem 0;
+}
+
+.subtitle {
+  margin: 0 0 1rem 0;
+  color: var(--muted);
+  font-size: .9rem;
+}
+
+.alert-error {
+  background: rgba(220, 38, 38, .12);
+  border: 1px solid rgba(220, 38, 38, .4);
+  color: #fecaca;
+  padding: .5rem .75rem;
+  border-radius: 10px;
+  margin-bottom: .75rem;
+  font-size: .9rem;
+}
+
+:root[data-theme="light"] .alert-error {
+  color: #7f1d1d;
+  background: #fee2e2;
+}
+
+/* Card del formulario */
+.scrapper-form-card {
+  background: var(--panel);
+  border-radius: 14px;
+  padding: 1rem 1.25rem;
+  box-shadow: var(--shadow);
+  border: var(--border);
+  margin-bottom: 1.25rem;
+}
+
+.scrapper-form-card h3 {
+  margin: 0 0 .75rem 0;
+}
+
+/* Form en una línea (responsive) */
+.form-row {
+  display: grid;
+  grid-template-columns: 1.3fr 1fr 1fr;
+  gap: .75rem;
+}
+
+@media (max-width: 900px) {
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+.form-group label {
+  display: block;
+  font-size: .85rem;
+  margin-bottom: .25rem;
+}
+
+.form-group input {
+  width: 100%;
+  padding: .45rem .6rem;
+  border-radius: 10px;
+  border: var(--border);
+  background: var(--chip);
+  color: var(--txt);
+  outline: none;
+}
+
+.form-group input:focus {
+  box-shadow: 0 0 0 1px var(--brand-2);
+}
+
+.error {
+  color: #f97373;
+  font-size: .75rem;
+  margin-top: .15rem;
+}
+
+/* Botones */
+.form-actions {
+  margin-top: .75rem;
+  display: flex;
+  gap: .5rem;
+}
+
+.btn {
+  border: var(--border);
+  background: var(--chip);
+  padding: .45rem .9rem;
+  border-radius: 10px;
+  cursor: pointer;
+  color: var(--txt);
+  font-size: .9rem;
+  font-weight: 600;
+}
+
+.btn.primary {
+  background: linear-gradient(135deg, var(--brand), var(--brand-2));
+  border: none;
+  color: #fff;
+}
+
+/* Grid de cards */
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.2rem;
+}
+
+
+.scrapper-card {
+  background: var(--card);
+  border-radius: 14px;
+  padding: .8rem .9rem;
+  border: var(--border);
+  box-shadow: var(--shadow);
+  display: flex;
+  flex-direction: column;
+  gap: .6rem;
+}
+
+.scrapper-card-header {
+  display: flex;
+  align-items: center;
+  gap: .6rem;
+}
+
+/* Imagen más grande del logo */
+.logo-img {
+  width: 80px;
+  height: 80px;
+  object-fit: contain;   /* mantiene proporción correcta */
+  border-radius: 12px;
+  background: var(--panel);
+  padding: 6px;
+  border: var(--border);
+  box-shadow: var(--shadow);
+}
+
+
+.card-title h4 {
+  margin: 0;
+  font-size: .95rem;
+}
+
+.site-link {
+  font-size: .8rem;
+  color: var(--brand-2);
+  word-break: break-all;
+}
+
+/* Botones de acción (reutilizamos estilos que ya usas) */
+.btn-edit {
+  background: var(--chip);
+  border: var(--border);
+  border-radius: 8px;
+  padding: 0.3rem 0.6rem;
+  cursor: pointer;
+  margin-right: 0.35rem;
+  font-size: .8rem;
+}
+
+.btn-edit:hover {
+  filter: brightness(1.05);
+}
+
+/* Botón Eliminar con tema */
+.btn-delete {
+  background: var(--delete-bg);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 0.3rem 0.7rem;
+  cursor: pointer;
+  font-size: .8rem;
+  font-weight: 600;
+  transition: .15s ease;
+}
+
+:root {
+  --delete-bg: #d32f2f;
+  --delete-bg-hover: #b71c1c;
+}
+
+:root[data-theme="light"] {
+  --delete-bg: #b71c1c;
+  --delete-bg-hover: #8e0000;
+}
+
+.btn-delete:hover {
+  background: var(--delete-bg-hover);
+}
+
+.card-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: .4rem;
+}
+
+.empty-text {
+  grid-column: 1 / -1;
+  text-align: center;
+  color: var(--muted);
+  padding: .75rem 0;
+}
+
+.loading-text {
+  margin-top: .5rem;
+  font-size: .9rem;
+  color: var(--muted);
+}
+.btn-scrape {
+  background: var(--brand);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 0.35rem 0.8rem;
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.btn-scrape:hover {
+  filter: brightness(1.05);
+}

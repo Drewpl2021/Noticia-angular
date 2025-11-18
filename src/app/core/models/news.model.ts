@@ -26,12 +26,28 @@ export interface PageSpring<T> {
 export interface NewsItem {
   id: number;
   url: string;
-  title: string;
-  author?: string | null;
-  publishedAt: string;         // ISO string
-  imageUrl?: string | null;
-  content?: string | null;     // puede venir con HTML
-  summary: string;             // texto plano para cards
-  tags: string[];
-  categories: string[];        // array (de 'categorias')
+  titulo: string;
+  autor: string | null;
+  fechaPublicado: string;   // viene como ISO string
+  imagenUrl: string;
+  contenido: string;
+  tags: string;             // ej. "portada, TAXI"
+  categorias: string;       // ej. "Otros"
+  actualizadoEn: string;
+}
+
+export interface NewsPage {
+  content: NewsItem[];
+  totalElements: number;
+  totalPages: number;
+  size: number;
+  number: number;          // 👈 coincide con el JSON ("number": 0)
+
+  // Estos son opcionales, solo si quieres usarlos después
+  pageable?: any;
+  sort?: any;
+  first?: boolean;
+  last?: boolean;
+  numberOfElements?: number;
+  empty?: boolean;
 }

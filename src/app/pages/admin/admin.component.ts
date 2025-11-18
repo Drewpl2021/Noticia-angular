@@ -15,10 +15,10 @@ function shuffle<T>(arr: T[]): T[] {
   standalone: true,
   selector: 'app-detail',
   imports: [CommonModule, HttpClientModule, RouterLink],
-  templateUrl: './detail.component.html',
-  styleUrls: ['./detail.component.css']
+  templateUrl: './admin.component.html',
+  styleUrls: ['./admin.component.css']
 })
-export class DetailComponent {
+export class AdminComponent {
   private route = inject(ActivatedRoute);
   private api = inject(NewsService);
   private sanitizer = inject(DomSanitizer);

@@ -1,0 +1,130 @@
+<div class="users-page">
+  <h2>Gestión de Usuarios</h2>
+  <p class="subtitle">
+    Crea, edita y elimina los usuarios del sistema.
+  </p>
+
+  <div *ngIf="errorMsg" class="alert alert-error">
+    {{ errorMsg }}
+  </div>
+
+  <div class="users-layout">
+    <!-- ====== FORMULARIO (nuevo / edición) ====== -->
+    <section class="user-form">
+      <h3>{{ editingUser ? 'Editar usuario' : 'Nuevo usuario' }}</h3>
+
+      <form [formGroup]="userForm" (ngSubmit)="save()">
+        <div class="form-row">
+          <label>Username</label>
+          <input
+            type="text"
+            formControlName="username"
+            placeholder="ej. andres.montes" />
+          <small *ngIf="username?.invalid && username?.touched">
+            El username es obligatorio (mínimo 3 caracteres).
+          </small>
+        </div>
+
+        <div class="form-row">
+          <label>Email</label>
+          <input
+            type="email"
+            formControlName="email"
+            placeholder="usuario@correo.com" />
+          <small *ngIf="email?.invalid && email?.touched">
+            Ingresa un email válido.
+          </small>
+        </div>
+
+        <div class="form-row-inline">
+          <div class="form-row">
+            <label>Nombre</label>
+            <input type="text" formControlName="nombre" />
+          </div>
+
+          <div class="form-row">
+            <label>Apellido</label>
+            <input type="text" formControlName="apellido" />
+          </div>
+        </div>
+
+        <div class="form-row">
+          <label>Rol</label>
+          <select formControlName="roleId">
+            <option [ngValue]="null">Seleccione un rol</option>
+            <option *ngFor="let r of roles" [ngValue]="r.id">
+              {{ r.nombre }}
+            </option>
+          </select>
+          <small *ngIf="roleId?.invalid && roleId?.touched">
+            Selecciona un rol.
+          </small>
+        </div>
+
+        <div class="form-actions">
+          <button class="btn primary" type="submit" [disabled]="loading">
+            {{ editingUser ? 'Guardar cambios' : 'Crear usuario' }}
+          </button>
+
+          <button
+            class="btn"
+            type="button"
+            *ngIf="editingUser"
+            (click)="startCreate()"
+          >
+            Cancelar edición
+          </button>
+        </div>
+      </form>
+    </section>
+
+    <!-- ====== TABLA ====== -->
+    <section class="users-table">
+      <div class="table-header">
+        <h3>Lista de usuarios</h3>
+        <button class="btn" type="button" (click)="startCreate()">
+          + Nuevo usuario
+        </button>
+      </div>
+
+      <div *ngIf="loading" class="loading-text">
+        Cargando...
+      </div>
+
+      <table *ngIf="!loading && users.length > 0">
+        <thead>
+        <tr>
+          <th>ID</th>
+          <th>Username</th>
+          <th>Nombre completo</th>
+          <th>Email</th>
+          <th>Rol</th>
+          <th>Acciones</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        <tr *ngFor="let u of users">
+          <td>{{ u.id }}</td>
+          <td>{{ u.username }}</td>
+          <td>{{ u.name }} {{ u.lastName }}</td>
+          <td>{{ u.email }}</td>
+          <td>{{ u.rol?.nombre || '—' }}</td>
+          <td>
+            <button class="btn-edit" type="button" (click)="startEdit(u)">
+              Editar
+            </button>
+            <button class="btn-delete" type="button" (click)="delete(u)">
+              Eliminar
+            </button>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+
+      <p *ngIf="!loading && users.length === 0" class="empty-text">
+        No hay usuarios registrados.
+      </p>
+    </section>
+  </div>
+</div>

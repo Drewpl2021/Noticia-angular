@@ -6,70 +6,70 @@
       <!-- Lead grande -->
       <a class="tile lead"
          *ngIf="data.content[0] as n"
-         [routerLink]="['/detalle', n.id]" [title]="n.title">
-        <img [src]="n.imageUrl || 'assets/placeholder-16x9.jpg'" [alt]="n.title">
+         [routerLink]="['/detalle', n.id]" [title]="n.titulo">
+        <img [src]="n.imagenUrl || 'assets/placeholder-16x9.jpg'" [alt]="n.titulo">
         <div class="shade"></div>
         <div class="overlay">
-          <span class="pill">{{ n.categories?.[0] || 'General' }}</span>
-          <h2 class="title">{{ n.title }}</h2>
-          <div class="meta-row">{{ n.publishedAt | date:'dd MMM yyyy' }}</div>
+          <span class="pill">{{ n.categorias?.[0] || 'General' }}</span>
+          <h2 class="title">{{ n.titulo }}</h2>
+          <div class="meta-row">{{ n.fechaPublicado | date:'dd MMM yyyy' }}</div>
         </div>
       </a>
 
       <!-- Medianas -->
       <a class="tile mid top"
          *ngIf="data.content[1] as n"
-         [routerLink]="['/detalle', n.id]" [title]="n.title">
-        <img [src]="n.imageUrl || 'assets/placeholder-16x9.jpg'" [alt]="n.title">
+         [routerLink]="['/detalle', n.id]" [title]="n.titulo">
+        <img [src]="n.imagenUrl || 'assets/placeholder-16x9.jpg'" [alt]="n.titulo">
         <div class="shade"></div>
         <div class="overlay">
-          <span class="pill">{{ n.categories?.[0] || 'General' }}</span>
-          <h3 class="title s">{{ n.title }}</h3>
+          <span class="pill">{{ n.categorias?.[0] || 'General' }}</span>
+          <h3 class="title s">{{ n.titulo }}</h3>
         </div>
       </a>
 
       <a class="tile mid bottom"
          *ngIf="data.content[2] as n"
-         [routerLink]="['/detalle', n.id]" [title]="n.title">
-        <img [src]="n.imageUrl || 'assets/placeholder-16x9.jpg'" [alt]="n.title">
+         [routerLink]="['/detalle', n.id]" [title]="n.titulo">
+        <img [src]="n.imagenUrl || 'assets/placeholder-16x9.jpg'" [alt]="n.titulo">
         <div class="shade"></div>
         <div class="overlay">
-          <span class="pill">{{ n.categories?.[0] || 'General' }}</span>
-          <h3 class="title s">{{ n.title }}</h3>
+          <span class="pill">{{ n.categorias?.[0] || 'General' }}</span>
+          <h3 class="title s">{{ n.titulo }}</h3>
         </div>
       </a>
 
       <!-- Pequeñas -->
       <a class="tile small s1"
          *ngIf="data.content[3] as n"
-         [routerLink]="['/detalle', n.id]" [title]="n.title">
-        <img [src]="n.imageUrl || 'assets/placeholder-16x9.jpg'" [alt]="n.title">
+         [routerLink]="['/detalle', n.id]" [title]="n.titulo">
+        <img [src]="n.imagenUrl || 'assets/placeholder-16x9.jpg'" [alt]="n.titulo">
         <div class="shade"></div>
         <div class="overlay">
-          <span class="pill">{{ n.categories?.[0] || 'General' }}</span>
-          <h3 class="title xs">{{ n.title }}</h3>
+          <span class="pill">{{ n.categorias?.[0] || 'General' }}</span>
+          <h3 class="title xs">{{ n.titulo }}</h3>
         </div>
       </a>
 
       <a class="tile small s2"
          *ngIf="data.content[4] as n"
-         [routerLink]="['/detalle', n.id]" [title]="n.title">
-        <img [src]="n.imageUrl || 'assets/placeholder-16x9.jpg'" [alt]="n.title">
+         [routerLink]="['/detalle', n.id]" [title]="n.titulo">
+        <img [src]="n.imagenUrl || 'assets/placeholder-16x9.jpg'" [alt]="n.titulo">
         <div class="shade"></div>
         <div class="overlay">
-          <span class="pill">{{ n.categories?.[0] || 'General' }}</span>
-          <h3 class="title xs">{{ n.title }}</h3>
+          <span class="pill">{{ n.categorias?.[0] || 'General' }}</span>
+          <h3 class="title xs">{{ n.titulo }}</h3>
         </div>
       </a>
 
       <a class="tile small s3"
          *ngIf="data.content[5] as n"
-         [routerLink]="['/detalle', n.id]" [title]="n.title">
-        <img [src]="n.imageUrl || 'assets/placeholder-16x9.jpg'" [alt]="n.title">
+         [routerLink]="['/detalle', n.id]" [title]="n.titulo">
+        <img [src]="n.imagenUrl || 'assets/placeholder-16x9.jpg'" [alt]="n.titulo">
         <div class="shade"></div>
         <div class="overlay">
-          <span class="pill">{{ n.categories?.[0] || 'General' }}</span>
-          <h3 class="title xs">{{ n.title }}</h3>
+          <span class="pill">{{ n.categorias?.[0] || 'General' }}</span>
+          <h3 class="title xs">{{ n.titulo }}</h3>
         </div>
       </a>
 

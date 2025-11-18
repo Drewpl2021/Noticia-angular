@@ -1,1 +1,137 @@
 h3{ margin:.25rem 0 .35rem }
+
+
+
+.nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: .75rem 0;
+}
+
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: .75rem;
+}
+
+/* ======================
+   MENÚ DE USUARIO (DARK/LIGHT)
+   ====================== */
+
+.user-wrapper {
+  position: relative;
+}
+
+.user-btn {
+  display: flex;
+  align-items: center;
+  gap: .35rem;
+  background: var(--chip);
+  color: var(--txt);
+  border: var(--border);
+  padding: .55rem .85rem;
+  border-radius: 12px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.user-menu {
+  position: absolute;
+  right: 0;
+  margin-top: .35rem;
+  padding: .5rem 0;
+  border-radius: 12px;
+  background: var(--panel);       /* Fondo según el tema */
+  border: var(--border);          /* Borde según tema */
+  box-shadow: var(--shadow);      /* Sombra según tema */
+  min-width: 160px;
+  z-index: 200;
+  display: grid;
+}
+
+.user-menu button {
+  text-align: left;
+  background: transparent;
+  border: none;
+  padding: .55rem 1rem;
+  color: var(--txt);              /* Texto visible según tema */
+  font-size: .9rem;
+  cursor: pointer;
+}
+
+.user-menu button:hover {
+  background: var(--chip);        /* Hover según tema */
+  filter: brightness(1.15);
+}
+
+
+/* ====== LAYOUT CON SIDEBAR ====== */
+.app-layout {
+  display: grid;
+  grid-template-columns: 240px 1fr; /* sidebar | contenido */
+  min-height: calc(100vh - 72px);  /* resta la altura aproximada del header */
+}
+
+/* Ajuste responsive: en pantallas pequeñas podríamos cambiar esto */
+@media (max-width: 900px) {
+  .app-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ====== SIDEBAR ====== */
+.sidebar {
+  background: var(--panel);
+  border-right: var(--border);
+  padding: 1rem .75rem;
+}
+
+.sidebar-header {
+  padding: .25rem .4rem .75rem;
+}
+
+.sidebar-title {
+  font-size: .9rem;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.sidebar-nav {
+  display: grid;
+  gap: .35rem;
+  margin-top: .25rem;
+}
+
+.sidebar-item {
+  width: 100%;
+  text-align: left;
+  padding: .55rem .7rem;
+  border-radius: 10px;
+  border: none;
+  background: var(--chip);
+  color: var(--txt);
+  font-size: .9rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+}
+
+.sidebar-item:hover {
+  filter: brightness(1.1);
+}
+
+/* Contenido principal */
+.app-content {
+  padding: 1rem 1.25rem 2rem;
+}
+
+/* Ya tenías estos, solo los recuerdo por si van aquí
+.nav { ... }
+.user-wrapper { ... }
+.user-menu { ... }
+etc.
+*/

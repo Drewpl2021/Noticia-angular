@@ -1,42 +1,36 @@
-import { inject, Injectable } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
-import { environment } from '../../../environments/environment';
-import { Observable, map } from 'rxjs';
-import { DbNewsSpring } from '../models/news.model';
-import { toNewsItem, mapPage, PageDto } from '../models/news.adapter';
+import { Injectable } from '@angular/core';
+import { ApiService } from './api.service';
+import { Observable } from 'rxjs';
+import { NewsPage, NewsItem } from '../models/news.model';
 
-@Injectable({ providedIn: 'root' })
-export class NewsService {
-  private http = inject(HttpClient);
-  private base = environment.apiUrl; // p.ej. http://localhost:8080/api
+@Injectable({
+  providedIn: 'root'
+})
+export class NewsService extends ApiService {
 
-  list(opts?: { page?: number; size?: number; categoria?: string; q?: string }): Observable<PageDto<ReturnType<typeof toNewsItem>>> {
-    let params = new HttpParams();
-    if (opts?.page != null) params = params.set('page', String(opts.page));
-    if (opts?.size != null) params = params.set('size', String(opts.size));
-    if (opts?.categoria)     params = params.set('categoria', opts.categoria);
-    if (opts?.q)             params = params.set('q', opts.q);
-
-    return this.http.get<any>(`${this.base}/noticias`, { params }).pipe(
-      map(page => mapPage<DbNewsSpring, ReturnType<typeof toNewsItem>>(page, toNewsItem))
-    );
+  list(params: { page: number; size: number; categoria?: string }): Observable<NewsPage> {
+    return this.http.get<NewsPage>(`${this.baseUrl}/articulos`, {
+      params: {
+        page: params.page,
+        size: params.size,
+        ...(params.categoria ? { categoria: params.categoria } : {})
+      }
+    });
   }
 
-  trending() {
-    return this.http.get<DbNewsSpring[]>(`${this.base}/noticias/trending`).pipe(
-      map(list => list.map(toNewsItem))
-    );
+  byId(id: number): Observable<NewsItem> {
+    return this.http.get<NewsItem>(`${this.baseUrl}/articulos/${id}`);
   }
 
-  categories() {
-    return this.http.get<string[]>(`${this.base}/categorias`);
+  categories(): Observable<string[]> {
+    return this.http.get<string[]>(`${this.baseUrl}/articulos/categorias`);
   }
 
-  subscribe(email: string) {                              // <-- añade este método si no lo tenías
-    return this.http.post(`${this.base}/newsletter/subscriptions`, { email });
+  trending(): Observable<NewsItem[]> {
+    return this.http.get<NewsItem[]>(`${this.baseUrl}/articulos/trending`);
   }
 
-  byId(id: number) {
-    return this.http.get<DbNewsSpring>(`${this.base}/${id}`).pipe(map(toNewsItem));
+  subscribe(email: string) {
+    return this.http.post(`${this.baseUrl}/articulos/newsletter`, { email });
   }
 }

@@ -4,21 +4,21 @@
   <article class="detail">
     <a routerLink="/" class="meta" style="display:inline-block;margin-bottom:1rem">← Volver</a>
 
-    <h1 class="title">{{ n.title }}</h1>
+    <h1 class="title">{{ n.titulo }}</h1>
     <div class="meta">
-      {{ (n.categories?.[0] || 'General') }} •
-      {{ n.publishedAt | date:'dd MMM yyyy' }} •
-      {{ n.author || 'Redacción' }}
+      {{ (n.categorias?.[0] || 'General') }} •
+      {{ n.fechaPublicado | date:'dd MMM yyyy' }} •
+      {{ n.autor || 'Redacción' }}
     </div>
 
-    <img *ngIf="n.imageUrl" class="hero" [src]="n.imageUrl" [alt]="n.title">
+    <img *ngIf="n.imagenUrl" class="hero" [src]="n.imagenUrl" [alt]="n.titulo">
 
     <!-- lead en negrita -->
     <p class="lead" *ngIf="n.lead"><strong>{{ n.lead }}</strong></p>
 
     <!-- contenido -->
-    <div class="content" *ngIf="(n.content || '').includes('<')" [innerHTML]="n.safeContent"></div>
-    <div class="content as-text" *ngIf="!(n.content || '').includes('<')" [textContent]="n.content"></div>
+    <div class="content" *ngIf="(n.tags || '').includes('<')" [innerHTML]="n.safeContent"></div>
+    <div class="content as-text" *ngIf="!(n.tags || '').includes('<')" [textContent]="n.tags"></div>
 
     <!-- tags -->
     <div class="tags" *ngIf="n.tags?.length">
@@ -39,15 +39,15 @@
       <a class="more-card"
          *ngFor="let m of more; trackBy: trackById"
          [routerLink]="['/detalle', m.id]"
-         [title]="m.title">
+         [title]="m.titulo">
         <div class="thumb-wrap">
-          <img [src]="m.imageUrl || 'assets/placeholder-4x3.jpg'" [alt]="m.title">
+          <img [src]="m.imagenUrl || 'assets/placeholder-4x3.jpg'" [alt]="m.titulo">
         </div>
         <div class="info">
           <div class="meta tiny">
-            {{ (m.categories?.[0] || 'General') }} • {{ m.publishedAt | date:'dd MMM' }}
+            {{ (m.categorias?.[0] || 'General') }} • {{ m.fechaPublicado | date:'dd MMM' }}
           </div>
-          <div class="headline clamp-2">{{ m.title }}</div>
+          <div class="headline clamp-2">{{ m.titulo }}</div>
         </div>
       </a>
 
