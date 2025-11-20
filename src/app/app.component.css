@@ -135,3 +135,162 @@ h3{ margin:.25rem 0 .35rem }
 .user-menu { ... }
 etc.
 */
+
+
+/* ========== OVERLAY PLANES ========== */
+
+.plans-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Fondo oscuro (sirve en ambos temas) */
+.plans-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+}
+
+/* Modal principal */
+.plans-modal {
+  position: relative;
+  background: var(--panel);       /* panel según tema */
+  color: var(--txt);              /* texto según tema */
+  border-radius: 16px;
+  padding: 1.5rem 1.8rem;
+  max-width: 900px;
+  width: 95%;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  border: var(--border);          /* borde según tema */
+  box-shadow: var(--shadow);      /* sombra según tema */
+}
+
+/* Header del modal */
+.plans-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.plans-header h2 {
+  margin: 0;
+  font-size: 1.4rem;
+}
+
+.icon-btn {
+  background: transparent;
+  color: var(--txt);
+  border: none;
+  font-size: 1.4rem;
+  cursor: pointer;
+}
+
+/* Cuerpo */
+.plans-body {
+  overflow: auto;
+}
+
+/* loader / error / vacío */
+.plans-loading,
+.plans-error,
+.plans-empty {
+  text-align: center;
+  padding: 1rem 0;
+  font-size: .95rem;
+}
+
+.plans-error {
+  color: var(--danger, #ff6b6b);  /* usa var(--danger) si existe, si no rojo */
+}
+
+/* Grid de cards */
+.plans-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 1.2rem;
+}
+
+/* Card individual */
+.plan-card {
+  background: var(--chip);        /* mismo estilo que botones/side */
+  border-radius: 12px;
+  padding: 1.1rem 1rem;
+  border: var(--border);
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+}
+
+.plan-card h3 {
+  margin: 0;
+  font-size: 1.05rem;
+}
+
+.plan-desc {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+
+/* Precio */
+.plan-price {
+  font-size: 1.3rem;
+  font-weight: 600;
+  margin-top: 0.3rem;
+}
+
+.plan-period {
+  font-size: 0.85rem;
+  font-weight: 400;
+  color: var(--muted);
+}
+
+/* Features */
+.plan-features {
+  list-style: none;
+  padding: 0;
+  margin: 0.4rem 0 0.6rem;
+  font-size: 0.85rem;
+}
+
+.plan-features li::before {
+  content: "✔ ";
+  margin-right: 0.15rem;
+  color: var(--success, #4caf50); /* si tienes var(--success) mejor */
+}
+
+/* Botón del plan */
+.plan-btn {
+  align-self: flex-start;
+  margin-top: auto;
+  background: var(--accent, #00c853);  /* acento según tema (o verde si no existe) */
+  color: var(--on-accent, #000);
+  padding: 0.4rem 1rem;
+  border-radius: 999px;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.9rem;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease;
+}
+
+.plan-btn:hover {
+  filter: brightness(1.08);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  transform: translateY(-1px);
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .plans-modal {
+    padding: 1.2rem 1rem;
+  }
+}
+

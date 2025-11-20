@@ -12,10 +12,12 @@ export interface LoginResponse {
   token: string;
   name: string;
   lastName: string;
+  id: number;
   role: string;       // "admin", "user", etc.
 }
 
 export interface AuthUser {
+  id: number;
   token: string;
   name: string;
   lastName: string;
@@ -54,6 +56,7 @@ export class AuthService {
     return this.http.post<LoginResponse>(`${this.baseUrl}/login`, req).pipe(
       tap(res => {
         const authUser: AuthUser = {
+          id: res.id,
           token: res.token,
           name: res.name,
           lastName: res.lastName,

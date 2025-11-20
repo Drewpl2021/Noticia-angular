@@ -40,6 +40,10 @@ export const routes: Routes = [
     loadComponent: () =>
       import('./pages/admin/scrapper/scrapper.component').then(m => m.ScrapperComponent)
   },
-
+  {
+    path: 'suscripcion/:productoId',
+    loadComponent: () =>
+      import('./pages/admin/suscripcion/tresPasos/tres-pasos.component').then(m => m.TresPasosComponent)
+  },
   { path: '**', redirectTo: '' },
 ];

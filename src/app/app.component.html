@@ -11,6 +11,16 @@
         {{ themeLabel }}
       </button>
 
+
+      <button
+        class="btn subscribe-btn"
+        (click)="openPlanes()">
+        Suscribirme
+      </button>
+
+
+
+
       <!-- Si NO está logueado → botón Iniciar sesión -->
       <button
         class="btn login-btn"
@@ -85,3 +95,65 @@
   </main>
 </ng-template>
 
+
+
+
+<!-- 🔥 Overlay de planes -->
+<div class="plans-overlay" *ngIf="showPlanes()">
+  <!-- fondo oscuro (clic cierra) -->
+  <div class="plans-backdrop" (click)="closePlanes()"></div>
+
+  <!-- modal -->
+  <div class="plans-modal" (click)="$event.stopPropagation()">
+    <div class="plans-header">
+      <h2>Planes y Membresías</h2>
+      <button class="icon-btn" (click)="closePlanes()">✕</button>
+    </div>
+
+    <!-- contenido -->
+    <div class="plans-body">
+      <!-- loader -->
+      <div *ngIf="planesLoading()" class="plans-loading">
+        Cargando planes...
+      </div>
+
+      <!-- error -->
+      <div *ngIf="planesError()" class="plans-error">
+        {{ planesError() }}
+      </div>
+
+      <!-- listado de cards -->
+      <div class="plans-grid" *ngIf="!planesLoading() && !planesError()">
+        <div class="plan-card" *ngFor="let plan of planes()">
+          <h3>{{ plan.nombre }}</h3>
+          <p class="plan-desc">{{ plan.descripcion }}</p>
+          <div class="plan-price">
+            S/. {{ plan.precio | number:'1.2-2' }}
+            <span class="plan-period" *ngIf="isMensual(plan)">
+              /mes
+            </span>
+
+          </div>
+
+          <ul class="plan-features">
+            <!-- Aquí puedes poner lógica o texto fijo según tipo -->
+            <li>Acceso completo a Noticias360</li>
+            <li>Navegación sin publicidad</li>
+            <li>Contenido exclusivo para miembros</li>
+          </ul>
+
+          <button
+            class="btn plan-btn"
+            (click)="seleccionarPlan(plan)">
+            Elegir este plan
+          </button>
+        </div>
+
+        <!-- Por si no hay planes -->
+        <div *ngIf="planes().length === 0 && !planesLoading()" class="plans-empty">
+          No hay planes disponibles por el momento.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

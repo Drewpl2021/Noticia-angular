@@ -4,6 +4,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { ScrapperService } from '../../../core/services/scrapper.service';
 import { Scrapper, ScrapperPayload } from '../../../core/models/scrapper.model';
+import {finalize} from "rxjs";
 
 @Component({
   standalone: true,
@@ -155,19 +156,34 @@ export class ScrapperComponent implements OnInit {
     if (!url) return;
 
     console.log('🔍 Enviando scraping para:', url);
+    this.loading = true;      // 🔹 activamos pantalla de carga
+    this.errorMsg = null;
 
-    this.scrapperApi.runScraper({ url }).subscribe({
-      next: (resp) => {
-        console.log('✔ Scraping completado:', resp);
-        alert(`Scraping finalizado\nArtículos guardados: ${resp.articulosGuardados}`);
-      },
-      error: (err) => {
-        console.error('❌ Error ejecutando scrapper', err);
-        alert('Error ejecutando el scrapper');
-      }
-    });
+    this.scrapperApi.runScraper({ url })
+      .pipe(
+        finalize(() => {
+          // 🔹 esto se ejecuta SIEMPRE (éxito o error)
+          this.loading = false;
+        })
+      )
+      .subscribe({
+        next: (resp) => {
+          console.log('✔ Scraping completado:', resp);
+
+          this.showToast(`Scraping finalizado — Artículos guardados: ${resp.articulosGuardados}`);
+        },
+        error: (err) => {
+          console.error('❌ Error ejecutando scrapper', err);
+          this.errorMsg = 'Error ejecutando el scrapper';
+          alert('Error ejecutando el scrapper');
+        }
+      });
   }
+  toastMessage: string | null = null;
 
-
+  showToast(msg: string) {
+    this.toastMessage = msg;
+    setTimeout(() => this.toastMessage = null, 4000);
+  }
 
 }

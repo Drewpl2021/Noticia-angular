@@ -114,3 +114,14 @@
     </p>
   </div>
 </section>
+<!-- 🔹 Overlay de carga -->
+<div class="loader-backdrop" *ngIf="loading">
+  <div class="loader-card">
+    <div class="loader-spinner"></div>
+    <p>Procesando, por favor espere...</p>
+  </div>
+</div>
+<!-- 🔥 TOAST -->
+<div class="toast" *ngIf="toastMessage">
+  {{ toastMessage }}
+</div>

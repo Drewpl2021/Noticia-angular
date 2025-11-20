@@ -1,0 +1,280 @@
+<div class="suscripcion-page">
+  <header class="suscripcion-header">
+    <h1>Suscripción a Noticias360</h1>
+    <a routerLink="/" class="link-volver">⬅ Volver al inicio</a>
+  </header>
+
+  <!-- Pasos -->
+  <div class="steps">
+    <div class="step-item" [class.active]="step() === 1">
+      <span>1</span> Plan
+    </div>
+    <div class="step-item" [class.active]="step() === 2">
+      <span>2</span> Datos
+    </div>
+    <div class="step-item" [class.active]="step() === 3">
+      <span>3</span> Pago
+    </div>
+  </div>
+
+  <!-- Contenido -->
+  <section class="suscripcion-body">
+
+    <!-- PASO 1 -->
+    <ng-container *ngIf="step() === 1">
+      <div *ngIf="planesLoading()" class="info-msg">Cargando planes...</div>
+      <div *ngIf="planesError()" class="error-msg">{{ planesError() }}</div>
+
+      <div class="plans-grid" *ngIf="!planesLoading() && !planesError()">
+        <div
+          class="plan-card"
+          *ngFor="let plan of planes()"
+          [class.selected]="selectedPlan()?.id === plan.id"
+          (click)="seleccionarPlan(plan)">
+
+          <h3>{{ plan.nombre }}</h3>
+          <p class="plan-desc">{{ plan.descripcion }}</p>
+
+          <p class="plan-price">
+            S/. {{ plan.precio | number:'1.2-2' }}
+            <span class="plan-period"
+                  *ngIf="plan.nombre && plan.nombre.toLowerCase().includes('mensual')">
+              /mes
+            </span>
+          </p>
+
+          <ul class="plan-features">
+            <li>Acceso completo a Noticias360</li>
+            <li>Navegación sin publicidad</li>
+            <li>Contenido exclusivo para miembros</li>
+          </ul>
+        </div>
+
+        <div *ngIf="planes().length === 0 && !planesLoading()" class="info-msg">
+          No hay planes disponibles por el momento.
+        </div>
+      </div>
+
+      <div class="step-actions">
+        <button class="btn primary"
+                [disabled]="!selectedPlan()"
+                (click)="continuarDesdeStep1()">
+          Continuar ➜
+        </button>
+      </div>
+    </ng-container>
+
+    <!-- PASO 2 -->
+    <ng-container *ngIf="step() === 2 && selectedPlan() as planSel">
+      <div class="step2-layout">
+        <!-- Form -->
+        <form [formGroup]="customerForm" class="customer-form" (ngSubmit)="goToStep3()">
+          <h2>Datos del titular</h2>
+
+          <label>
+            Nombre completo
+            <input type="text" formControlName="nombre" />
+          </label>
+          <div class="field-error"
+               *ngIf="customerForm.get('nombre')?.invalid && customerForm.get('nombre')?.touched">
+            Ingresa un nombre válido.
+          </div>
+
+          <label>
+            Correo electrónico
+            <input type="email" formControlName="email" />
+          </label>
+          <div class="field-error"
+               *ngIf="customerForm.get('email')?.invalid && customerForm.get('email')?.touched">
+            Ingresa un correo válido.
+          </div>
+
+          <div class="doc-row">
+            <label>
+              Tipo documento
+              <select formControlName="tipoDocumento">
+                <option value="DNI">DNI</option>
+                <option value="RUC">RUC</option>
+                <option value="CE">CE</option>
+              </select>
+            </label>
+
+            <label>
+              N° documento
+              <input type="text" formControlName="documento" />
+            </label>
+          </div>
+          <div class="field-error"
+               *ngIf="customerForm.get('documento')?.invalid && customerForm.get('documento')?.touched">
+            Ingresa un documento válido.
+          </div>
+
+          <div class="step-actions">
+            <button type="button" class="btn ghost" (click)="backToStep1()">
+              ⬅ Volver
+            </button>
+            <button type="submit" class="btn primary">
+              Continuar al pago ➜
+            </button>
+          </div>
+        </form>
+
+        <!-- Resumen plan -->
+        <aside class="plan-summary-card">
+          <h2>Resumen del plan</h2>
+          <p class="plan-name">{{ planSel.nombre }}</p>
+          <p class="plan-desc">{{ planSel.descripcion }}</p>
+          <p class="plan-price">
+            S/. {{ planSel.precio | number:'1.2-2' }}
+            <span class="plan-period"
+                  *ngIf="planSel.nombre && planSel.nombre.toLowerCase().includes('mensual')">
+              /mes
+            </span>
+          </p>
+        </aside>
+      </div>
+    </ng-container>
+
+    <!-- PASO 3 -->
+    <ng-container *ngIf="step() === 3 && selectedPlan() as planSel">
+      <div class="step3-layout">
+        <aside class="plan-summary-card">
+          <h2>Confirmar pago</h2>
+          <p class="plan-name">{{ planSel.nombre }}</p>
+          <p class="plan-desc">{{ planSel.descripcion }}</p>
+          <p class="plan-price">
+            S/. {{ planSel.precio | number:'1.2-2' }}
+            <span class="plan-period"
+                  *ngIf="planSel.nombre && planSel.nombre.toLowerCase().includes('mensual')">
+          /mes
+        </span>
+          </p>
+        </aside>
+
+        <section class="payment-panel">
+          <h2>Método de pago</h2>
+
+          <div class="method-row">
+            <button type="button"
+                    class="chip"
+                    [class.active]="paymentMethod() === 'card'"
+                    (click)="setPaymentMethod('card')">
+              💳 Tarjeta
+            </button>
+            <button type="button"
+                    class="chip"
+                    [class.active]="paymentMethod() === 'yape'"
+                    (click)="setPaymentMethod('yape')">
+              📱 Yape
+            </button>
+            <button type="button"
+                    class="chip"
+                    [class.active]="paymentMethod() === 'plin'"
+                    (click)="setPaymentMethod('plin')">
+              💸 Plin
+            </button>
+          </div>
+
+          <p *ngIf="paymentStatus() === 'idle'">
+            Al confirmar, se procesará el pago mediante tu pasarela Culqi en el backend.
+          </p>
+
+          <!-- Overlay de éxito -->
+          <div class="success-overlay" *ngIf="showSuccess()">
+            <div class="success-modal">
+              <div class="success-icon">✔</div>
+              <h2>Pago exitoso</h2>
+              <p>{{ paymentMessage() }}</p>
+            </div>
+          </div>
+
+
+          <!-- 🔹 FORM TARJETA (cuando método = card) -->
+          <form
+            *ngIf="paymentMethod() === 'card'"
+            [formGroup]="cardForm"
+            class="card-form"
+            (ngSubmit)="pagar()">
+
+            <div class="card-row">
+              <label>
+                Número de tarjeta
+                <input type="text"
+                       formControlName="card_number"
+                       placeholder="4111 1111 1111 1111" />
+              </label>
+            </div>
+
+            <div class="card-row">
+              <label>
+                Mes (MM)
+                <input type="text"
+                       formControlName="expiration_month"
+                       placeholder="09" />
+              </label>
+
+              <label>
+                Año (YYYY)
+                <input type="text"
+                       formControlName="expiration_year"
+                       placeholder="2026" />
+              </label>
+
+              <label>
+                CVV
+                <input type="password"
+                       formControlName="cvv"
+                       placeholder="123" />
+              </label>
+            </div>
+
+            <div class="step-actions">
+              <button type="button" class="btn ghost" (click)="step.set(2)">
+                ⬅ Volver
+              </button>
+              <button
+                type="submit"
+                class="btn primary"
+                [disabled]="payLoading() || paymentStatus() === 'success'">
+                {{ payLoading() ? 'Procesando...' : 'Pagar ahora' }}
+              </button>
+            </div>
+          </form>
+          <!-- Overlay de ERROR -->
+          <div class="error-overlay" *ngIf="showCardError()">
+            <div class="error-modal">
+              <div class="error-icon">⚠</div>
+              <h2>Error en el pago</h2>
+              <p>{{ cardError() }}</p>
+              <button class="btn primary" (click)="cerrarCardError()">Entendido</button>
+            </div>
+          </div>
+
+
+
+          <!-- 🔹 BOTÓN SIMPLE (Yape / Plin) -->
+          <div class="step-actions" *ngIf="paymentMethod() !== 'card'">
+            <button type="button" class="btn ghost" (click)="step.set(2)">
+              ⬅ Volver
+            </button>
+            <button
+              type="button"
+              class="btn primary"
+              (click)="pagar()"
+              [disabled]="payLoading() || paymentStatus() === 'success'">
+              {{ payLoading() ? 'Procesando...' : 'Pagar ahora' }}
+            </button>
+          </div>
+
+          <div class="step-actions" *ngIf="paymentStatus() === 'success'">
+            <button type="button" class="btn" (click)="irAlPanel()">
+              Ir al panel principal
+            </button>
+          </div>
+        </section>
+      </div>
+    </ng-container>
+
+
+  </section>
+</div>
