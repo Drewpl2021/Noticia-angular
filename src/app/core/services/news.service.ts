@@ -33,4 +33,67 @@ export class NewsService extends ApiService {
   subscribe(email: string) {
     return this.http.post(`${this.baseUrl}/articulos/newsletter`, { email });
   }
+
+
+  // ================== NUEVAS APIS ==================
+
+  /**
+   * ✅ Buscar por texto (incluye título)
+   * GET /api/articulos/search?q=...
+   */
+  search(q: string, page: number, size: number): Observable<NewsPage> {
+    return this.http.get<NewsPage>(`${this.baseUrl}/articulos/search`, {
+      params: {
+        q,
+        page,
+        size
+      }
+    });
+  }
+
+  /**
+   * ✅ Buscar por una categoría
+   * GET /api/articulos/categoria?c=...
+   * (Si algún día quieres reemplazar list(...) por esto, ya está listo)
+   */
+  byCategory(categoria: string, page: number, size: number): Observable<NewsPage> {
+    return this.http.get<NewsPage>(`${this.baseUrl}/articulos/categoria`, {
+      params: {
+        c: categoria,
+        page,
+        size
+      }
+    });
+  }
+
+  /**
+   * ✅ Filtrar por varias categorías
+   * GET /api/articulos/noticias?categoria=Cat1,Cat2
+   */
+  byCategories(categorias: string[], page: number, size: number): Observable<NewsPage> {
+    const categoriaParam = categorias.join(',');
+    return this.http.get<NewsPage>(`${this.baseUrl}/articulos/noticias`, {
+      params: {
+        categoria: categoriaParam,
+        page,
+        size
+      }
+    });
+  }
+
+  /**
+   * ✅ Buscar por rango de fechas
+   * GET /api/articulos/fecha?desde=...&hasta=...
+   * (formato típico: YYYY-MM-DD)
+   */
+  byDateRange(desde: string, hasta: string, page: number, size: number): Observable<NewsPage> {
+    return this.http.get<NewsPage>(`${this.baseUrl}/articulos/fecha`, {
+      params: {
+        desde,
+        hasta,
+        page,
+        size
+      }
+    });
+  }
 }

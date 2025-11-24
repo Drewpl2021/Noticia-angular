@@ -21,6 +21,12 @@ export const routes: Routes = [
     // pero por ahora lo dejamos libre.
   },
 
+  {
+    path: 'noticiasp',
+    canActivate: [authGuard],
+    loadComponent: () =>
+      import('./pages/noticias/Premiun/noticiasP.component').then(m => m.NoticiasPComponent)
+  },
   // ====== RUTAS PROTEGIDAS (login + admin) ======
   {
     path: 'admin',

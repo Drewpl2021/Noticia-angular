@@ -2,8 +2,11 @@
 <main class="container detail-grid" *ngIf="item$ | async as n">
   <!-- Columna principal -->
   <article class="detail">
-    <a routerLink="/" class="meta" style="display:inline-block;margin-bottom:1rem">← Volver</a>
+    <button class="back-btn" (click)="goBack()">
+      <span class="arrow">←</span> Volver
+    </button>
 
+    <br><br>
     <h1 class="title">{{ n.titulo }}</h1>
     <div class="meta">
       {{ (n.categorias?.[0] || 'General') }} •
@@ -14,17 +17,18 @@
     <img *ngIf="n.imagenUrl" class="hero" [src]="n.imagenUrl" [alt]="n.titulo">
 
     <!-- lead en negrita -->
-    <p class="lead" *ngIf="n.lead"><strong>{{ n.lead }}</strong></p>
 
     <!-- contenido -->
-    <div class="content" *ngIf="(n.tags || '').includes('<')" [innerHTML]="n.safeContent"></div>
-    <div class="content as-text" *ngIf="!(n.tags || '').includes('<')" [textContent]="n.tags"></div>
+    <div class="content" [innerHTML]="n.safeContent"></div>
 
-    <!-- tags -->
-    <div class="tags" *ngIf="n.tags?.length">
+    <!-- etiquetas generadas desde el contenido -->
+    <div class="tags"
+         *ngIf="getChipsFromContent(n.contenido) as chips">
       <span class="tag">Etiquetas</span>
-      <span class="chip" *ngFor="let tag of n.tags">{{ tag }}</span>
+      <span class="chip" *ngFor="let tag of chips">{{ tag }}</span>
     </div>
+
+
 
     <!-- fuente -->
     <p *ngIf="n.url" class="meta" style="margin-top:1rem">

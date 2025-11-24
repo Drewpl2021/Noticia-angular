@@ -1,0 +1,219 @@
+<main class="container" style="padding:1rem 0 2rem 0">
+
+  <!-- ====== BARRA DE FILTROS ====== -->
+  <form class="filter-bar" [formGroup]="filterForm" (ngSubmit)="onApplyFilters()">
+    <div class="filter-row">
+
+      <!-- Buscar por texto -->
+      <input
+        type="search"
+        formControlName="q"
+        placeholder="Buscar noticias por título o texto..."
+        aria-label="Buscar noticias">
+
+      <!-- Rango de fechas -->
+      <div class="filter-dates">
+        <label>
+          <span>Desde</span>
+          <input type="date" formControlName="from">
+        </label>
+        <span class="dash">–</span>
+        <label>
+          <span>Hasta</span>
+          <input type="date" formControlName="to">
+        </label>
+      </div>
+
+      <!-- Botones -->
+      <button type="submit" class="btn primary">
+        Aplicar filtros
+      </button>
+      <button type="button" class="btn ghost" (click)="resetFilters()">
+        Limpiar
+      </button>
+    </div>
+
+    <p class="filter-hint">
+      • Si escribes texto se usa <strong>búsqueda por texto</strong>.
+      • Si solo hay fechas se usa <strong>rango de fechas</strong>.
+      • Si solo hay categorías se usa <strong>filtro por categorías</strong>.
+    </p>
+  </form>
+
+
+  <div class="grid">
+    <!-- ====== FEED (izquierda) ====== -->
+    <section class="mosaic" *ngIf="news$ | async as data">
+
+      <!-- ====== MOSAICO ====== -->
+      <!-- Lead grande -->
+      <a class="tile lead"
+         *ngIf="data.content[0] as n"
+         [routerLink]="['/detalle', n.id]" [title]="n.titulo">
+        <img [src]="n.imagenUrl || 'assets/placeholder-16x9.jpg'" [alt]="n.titulo">
+        <div class="shade"></div>
+        <div class="overlay">
+          <span class="pill">{{ n.categorias?.[0] || 'General' }}</span>
+
+          <!-- NUEVO: tags desde el contenido -->
+          <div class="tags-row" *ngIf="getTagsFromContent(n.contenido) as tags">
+            <span class="tag" *ngFor="let t of tags">{{ t }}</span>
+          </div>
+
+
+          <h2 class="title">{{ n.titulo }}</h2>
+
+          <!-- NUEVO: snippet de contenido -->
+          <p class="snippet" *ngIf="n.contenido">
+            {{ n.contenido | slice:0:140 }}...
+          </p>
+
+          <div class="meta-row">{{ n.fechaPublicado | date:'dd MMM yyyy' }}</div>
+        </div>
+      </a>
+
+      <!-- Medianas -->
+      <a class="tile mid top"
+         *ngIf="data.content[1] as n"
+         [routerLink]="['/detalle', n.id]" [title]="n.titulo">
+        <img [src]="n.imagenUrl || 'assets/placeholder-16x9.jpg'" [alt]="n.titulo">
+        <div class="shade"></div>
+        <div class="overlay">
+          <span class="pill">{{ n.categorias?.[0] || 'General' }}</span>
+          <h3 class="title s">{{ n.titulo }}</h3>
+        </div>
+      </a>
+
+      <a class="tile mid bottom"
+         *ngIf="data.content[2] as n"
+         [routerLink]="['/detalle', n.id]" [title]="n.titulo">
+        <img [src]="n.imagenUrl || 'assets/placeholder-16x9.jpg'" [alt]="n.titulo">
+        <div class="shade"></div>
+        <div class="overlay">
+          <span class="pill">{{ n.categorias?.[0] || 'General' }}</span>
+          <h3 class="title s">{{ n.titulo }}</h3>
+        </div>
+      </a>
+
+      <!-- Pequeñas -->
+      <a class="tile small s1"
+         *ngIf="data.content[3] as n"
+         [routerLink]="['/detalle', n.id]" [title]="n.titulo">
+        <img [src]="n.imagenUrl || 'assets/placeholder-16x9.jpg'" [alt]="n.titulo">
+        <div class="shade"></div>
+        <div class="overlay">
+          <span class="pill">{{ n.categorias?.[0] || 'General' }}</span>
+          <h3 class="title xs">{{ n.titulo }}</h3>
+        </div>
+      </a>
+
+      <a class="tile small s2"
+         *ngIf="data.content[4] as n"
+         [routerLink]="['/detalle', n.id]" [title]="n.titulo">
+        <img [src]="n.imagenUrl || 'assets/placeholder-16x9.jpg'" [alt]="n.titulo">
+        <div class="shade"></div>
+        <div class="overlay">
+          <span class="pill">{{ n.categorias?.[0] || 'General' }}</span>
+          <h3 class="title xs">{{ n.titulo }}</h3>
+        </div>
+      </a>
+
+      <a class="tile small s3"
+         *ngIf="data.content[5] as n"
+         [routerLink]="['/detalle', n.id]" [title]="n.titulo">
+        <img [src]="n.imagenUrl || 'assets/placeholder-16x9.jpg'" [alt]="n.titulo">
+        <div class="shade"></div>
+        <div class="overlay">
+          <span class="pill">{{ n.categorias?.[0] || 'General' }}</span>
+          <h3 class="title xs">{{ n.titulo }}</h3>
+        </div>
+      </a>
+
+      <!-- ====== PAGINACIÓN ====== -->
+      <nav class="pagination" style="grid-column: 1 / -1; margin-top:.5rem">
+        <button class="btn" (click)="firstPage()" [disabled]="page() === 0">« Primero</button>
+        <button class="btn" (click)="prevPage()"  [disabled]="page() === 0">‹ Anterior</button>
+
+        <ng-container *ngFor="let p of pageRange()">
+          <button class="btn num" [class.is-active]="p === page()" (click)="goTo(p)">
+            {{ p + 1 }}
+          </button>
+        </ng-container>
+
+        <button class="btn" (click)="nextPage()" [disabled]="page() >= totalPages() - 1">Siguiente ›</button>
+        <button class="btn" (click)="lastPage()" [disabled]="page() >= totalPages() - 1">Último »</button>
+
+        <span class="meta" style="margin-left:.5rem">
+          Página {{ page() + 1 }} de {{ totalPages() }}
+        </span>
+      </nav>
+
+      <div class="meta" *ngIf="data.totalElements === 0">No hay noticias.</div>
+    </section>
+
+
+    <!-- ====== SIDEBAR (derecha) ====== -->
+    <aside class="sidebar" aria-label="Barra lateral">
+      <!-- Categorías con filtro (multi-select) -->
+      <div class="widget">
+        <h4>Categorías</h4>
+        <div class="row">
+          <!-- “Todas” -->
+          <button type="button"
+                  class="tab"
+                  [class.active]="selectedCategories().length === 0"
+                  (click)="clearCategoryFilter()">
+            Todas
+          </button>
+
+          <!-- Dinámicas (multi-select) -->
+          <button type="button"
+                  class="tab"
+                  *ngFor="let c of (categories$ | async)"
+                  [class.active]="selectedCategories().includes(c)"
+                  (click)="toggleCategory(c)">
+            {{ c }}
+          </button>
+        </div>
+      </div>
+
+      <!-- Hora actual -->
+      <div class="widget clock">
+        <h4>Hora actual</h4>
+        <p class="clock-text">
+          {{ now$ | async | date:'fullDate' }} — {{ now$ | async | date:'HH:mm:ss' }}
+        </p>
+      </div>
+
+    </aside>
+
+  </div>
+</main>
+
+<!-- ====== FOOTER ====== -->
+<footer>
+  <div class="container footer-inner">
+    <div>
+      <h3>Noticias360</h3>
+      <p class="muted">Periodismo claro y directo. Cobertura 24/7 con enfoque local y global.</p>
+    </div>
+    <div>
+      <h4>Secciones</h4>
+      <ul style="list-style:none;padding:0;margin:.5rem 0 0 0;display:grid;gap:.4rem">
+        <li><a href="#" class="muted">Política</a></li>
+        <li><a href="#" class="muted">Economía</a></li>
+        <li><a href="#" class="muted">Deportes</a></li>
+        <li><a href="#" class="muted">Tecnología</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Legal</h4>
+      <ul style="list-style:none;padding:0;margin:.5rem 0 0 0;display:grid;gap:.4rem">
+        <li><a href="#" class="muted">Términos</a></li>
+        <li><a href="#" class="muted">Privacidad</a></li>
+        <li><a href="#" class="muted">Contacto</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="credits">© 2025 Noticias360 — Mas cerca de ti</div>
+</footer>
