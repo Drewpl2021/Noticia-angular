@@ -66,6 +66,19 @@
           📰 Noticias
         </button>
 
+        <button class="sidebar-item" routerLink="csvp">
+          📇 CSV
+        </button>
+
+        <button class="sidebar-item" routerLink="crearNoticia">
+          🆕 Crear Noticia
+        </button>
+
+
+        <button class="sidebar-item" routerLink="aprobar" *ngIf="auth.isAdmin()">
+          🛎️ Solicitudes
+        </button>
+
         <button class="sidebar-item" routerLink="/admin" *ngIf="auth.isAdmin()">
           📰 Gestión de noticias
         </button>
@@ -136,11 +149,11 @@
           </div>
 
           <ul class="plan-features">
-            <!-- Aquí puedes poner lógica o texto fijo según tipo -->
-            <li>Acceso completo a Noticias360</li>
-            <li>Navegación sin publicidad</li>
-            <li>Contenido exclusivo para miembros</li>
+            <li *ngFor="let feature of getPlanFeatures(plan)">
+              {{ feature }}
+            </li>
           </ul>
+
 
           <button
             class="btn plan-btn"

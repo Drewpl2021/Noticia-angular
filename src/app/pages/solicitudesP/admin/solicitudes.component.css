@@ -1,0 +1,314 @@
+/* ===== Layout general ===== */
+.admin-solicitudes {
+  padding: 1rem 0 2rem 0;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+/* ===== Tarjetas contenedoras ===== */
+.card {
+  padding: 1.1rem 1.3rem;
+  border-radius: 16px;
+  background: var(--card);
+  border: var(--border);
+  box-shadow: var(--shadow);
+  display: grid;
+  gap: .75rem;
+}
+
+.card.header h1 {
+  margin: 0;
+}
+
+.card.header p {
+  margin: 0;
+}
+
+/* ===== Filtros ===== */
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .75rem;
+  align-items: center;
+}
+
+.filters label {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  font-size: .9rem;
+}
+
+.filters select {
+  min-width: 160px;
+  padding: .45rem .75rem;
+  border-radius: 999px;
+  border: var(--border);
+  background: var(--chip);
+  color: var(--txt);
+}
+
+.hint {
+  font-size: .8rem;
+  color: var(--muted);
+}
+
+/* ===== Línea de estado ===== */
+.status-line {
+  font-size: .85rem;
+  min-height: 1.2rem;
+}
+
+.status-line .loading {
+  color: var(--muted);
+}
+
+.status-line .ok {
+  color: #2ea44f;
+}
+
+.status-line .error {
+  color: #e55353;
+}
+
+/* ===== Card de lista (título + grid de cards) ===== */
+.card.list {
+  display: flex;
+  flex-direction: column;
+  gap: .75rem;
+}
+
+.card.list h2 {
+  margin: 0;
+}
+
+/* ===== Grid de cards de solicitudes ===== */
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: .75rem;
+}
+
+@media (max-width: 1100px) {
+  .cards-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 720px) {
+  .cards-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ===== Card individual de solicitud ===== */
+.sol-card {
+  border-radius: 14px;
+  padding: .9rem .95rem;
+  background: var(--panel, var(--card));
+  border: var(--border);
+  box-shadow: 0 4px 16px rgba(0,0,0,.18);
+  display: flex;
+  flex-direction: column;
+  gap: .6rem;
+}
+
+/* header: id + estado */
+.sol-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: .8rem;
+}
+
+.sol-id {
+  font-weight: 600;
+  color: var(--muted);
+}
+
+/* bloque principal: imagen + texto */
+.sol-main {
+  display: flex;
+  gap: .7rem;
+}
+
+.thumb-wrap {
+  flex: 0 0 110px;
+  border-radius: 10px;
+  overflow: hidden;
+  background: #000;
+}
+
+.thumb-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.sol-text {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.sol-title {
+  margin: 0 0 .25rem 0;
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+.sol-content {
+  margin: 0;
+  font-size: .85rem;
+  color: var(--muted);
+  display: -webkit-box;
+  -webkit-line-clamp: 3;   /* máx 3 líneas */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* meta inferior: autor, fecha, categorías, link */
+.sol-meta-row {
+  display: flex;
+  justify-content: space-between;
+  gap: .75rem;
+  font-size: .8rem;
+}
+
+.sol-meta-row .left {
+  display: flex;
+  flex-direction: column;
+  gap: .15rem;
+}
+
+.sol-meta-row .label {
+  font-weight: 600;
+  color: var(--muted);
+  margin-right: .3rem;
+}
+
+.sol-meta-row .value {
+  font-weight: 500;
+}
+
+.sol-meta-row .date {
+  color: var(--muted);
+}
+
+.sol-meta-row .right {
+  display: flex;
+  flex-direction: column;
+  gap: .25rem;
+  align-items: flex-end;
+}
+
+/* categorías */
+.pill-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .25rem;
+}
+
+.pill {
+  padding: .15rem .5rem;
+  border-radius: 999px;
+  background: var(--chip);
+  border: var(--border);
+  font-size: .75rem;
+}
+
+/* link a la fuente */
+.orig-link {
+  font-size: .78rem;
+  color: var(--brand);
+  text-decoration: none;
+}
+
+.orig-link:hover {
+  text-decoration: underline;
+}
+
+/* acciones */
+.sol-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: .4rem;
+  margin-top: .25rem;
+}
+
+/* ===== Badge de estado ===== */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: .15rem .55rem;
+  border-radius: 999px;
+  font-size: .75rem;
+  font-weight: 600;
+}
+
+.badge.pending {
+  background: rgba(255, 193, 7, .15);
+  color: #ffb300;
+}
+
+.badge.approved {
+  background: rgba(40, 167, 69, .18);
+  color: #2ea44f;
+}
+
+.badge.rejected {
+  background: rgba(220, 53, 69, .18);
+  color: #e55353;
+}
+
+/* ===== Botones ghost ===== */
+.btn-ghost {
+  padding: .25rem .6rem;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  background: transparent;
+  font-size: .78rem;
+  cursor: pointer;
+}
+
+.btn-ghost.success {
+  border-color: rgba(40, 167, 69, .5);
+  color: #2ea44f;
+}
+
+.btn-ghost.danger {
+  border-color: rgba(220, 53, 69, .6);
+  color: #e55353;
+}
+
+.btn-ghost:disabled {
+  opacity: .5;
+  cursor: not-allowed;
+}
+
+/* ===== Responsive extra ===== */
+@media (max-width: 720px) {
+  .filters {
+    align-items: flex-start;
+  }
+
+  .sol-main {
+    flex-direction: column;
+  }
+
+  .thumb-wrap {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .sol-meta-row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .sol-meta-row .right {
+    align-items: flex-start;
+  }
+}

@@ -1,0 +1,156 @@
+<main class="container solicitud-grid">
+
+  <!-- ===== Sección usuario: crear solicitud ===== -->
+  <section class="card">
+    <h1>Enviar propuesta de noticia</h1>
+    <p class="muted">
+      Completa el formulario para proponer una noticia. Nuestro equipo revisará el contenido antes de publicarlo.
+    </p>
+
+    <form [formGroup]="form" (ngSubmit)="submit()" class="form-grid">
+      <!-- URL -->
+      <div class="field">
+        <label>URL original <span>*</span></label>
+        <input type="url" formControlName="url" placeholder="https://...">
+        <small class="error" *ngIf="hasError('url','required')">
+          La URL es obligatoria.
+        </small>
+      </div>
+
+      <!-- Título -->
+      <div class="field">
+        <label>Título <span>*</span></label>
+        <input type="text" formControlName="titulo" placeholder="Nueva propuesta para turismo en Puno">
+        <small class="error" *ngIf="hasError('titulo','required')">
+          El título es obligatorio.
+        </small>
+      </div>
+
+      <!-- Autor -->
+      <div class="field">
+        <label>Autor</label>
+        <div class="readonly-author">
+          {{ nombreCompleto }}
+        </div>
+        <small class="hint">Este nombre se toma de tu perfil.</small>
+      </div>
+
+
+      <!-- Fecha publicado -->
+      <div class="field">
+        <label>Fecha de publicación</label>
+        <input type="datetime-local" formControlName="fechaPublicado">
+        <small class="hint">
+          Si no seleccionas nada, se tomará la fecha y hora actual.
+        </small>
+      </div>
+
+      <!-- Imagen -->
+      <div class="field">
+        <label>Imagen (URL) <span>*</span></label>
+        <input type="url" formControlName="imagenUrl" placeholder="https://misitio.com/imagenes/turismo.jpg">
+        <small class="error" *ngIf="hasError('imagenUrl','required')">
+          La imagen es obligatoria.
+        </small>
+      </div>
+
+      <!-- Categorías -->
+      <div class="field">
+        <label>Categorías <span>*</span></label>
+        <input type="text" formControlName="categorias" placeholder="Turismo, Economía">
+        <small class="hint">
+          Escríbelas separadas por comas (ej. Turismo, Economía).
+        </small>
+        <small class="error" *ngIf="hasError('categorias','required')">
+          Indica al menos una categoría.
+        </small>
+      </div>
+
+      <!-- Tags -->
+      <div class="field">
+        <label>Tags</label>
+        <input type="text" formControlName="tags" placeholder="turismo, puno, desarrollo">
+        <small class="hint">
+          Palabras clave separadas por comas.
+        </small>
+      </div>
+
+      <!-- Contenido -->
+      <div class="field field-full">
+        <label>Contenido de la noticia <span>*</span></label>
+        <textarea rows="8"
+                  formControlName="contenido"
+                  placeholder="Describe la noticia o pega el cuerpo del artículo..."></textarea>
+        <small class="error" *ngIf="hasError('contenido','required')">
+          El contenido es obligatorio.
+        </small>
+        <small class="error" *ngIf="hasError('contenido','minlength')">
+          El contenido debe tener al menos 30 caracteres.
+        </small>
+      </div>
+
+      <!-- Estado mensajes -->
+      <div class="status field-full">
+        <span class="ok" *ngIf="successMsg()">{{ successMsg() }}</span>
+        <span class="error" *ngIf="errorMsg()">{{ errorMsg() }}</span>
+      </div>
+
+      <!-- Botón -->
+      <div class="actions field-full">
+        <button class="btn primary" type="submit" [disabled]="loading()">
+          {{ loading() ? 'Enviando...' : 'Enviar solicitud' }}
+        </button>
+      </div>
+    </form>
+  </section>
+
+  <!-- ===== Sección: MIS solicitudes ===== -->
+  <section class="card mine">
+    <h2>Mis solicitudes enviadas</h2>
+    <p class="muted">
+      Aquí puedes ver las solicitudes de noticia que has enviado y su estado actual.
+    </p>
+
+    <div class="filters">
+      <label>
+        Estado:
+        <select [formControl]="estadoControl">
+          <option *ngFor="let e of estados" [value]="e">{{ e }}</option>
+        </select>
+      </label>
+    </div>
+
+    <div class="table-wrap" *ngIf="solicitudes$ | async as solicitudes">
+      <table *ngIf="solicitudes.length; else emptyMine">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Título</th>
+          <th>Fecha</th>
+          <th>Estado</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let s of solicitudes; trackBy: trackById">
+          <td>{{ s.id }}</td>
+          <td class="clamp">{{ s.titulo }}</td>
+          <td>{{ s.fechaPublicado | date:'dd/MM/yyyy HH:mm' }}</td>
+          <td>
+          <span class="badge" [class.pending]="(s.estado || 'PENDIENTE') === 'PENDIENTE'"
+                [class.approved]="s.estado === 'APROBADO'"
+                [class.rejected]="s.estado === 'RECHAZADO'">
+            {{ s.estado || 'PENDIENTE' }}
+          </span>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+
+      <ng-template #emptyMine>
+        <p class="muted">Aún no has enviado solicitudes para este estado.</p>
+      </ng-template>
+    </div>
+  </section>
+
+
+</main>

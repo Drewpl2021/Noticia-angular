@@ -259,6 +259,62 @@ export class TresPasosComponent implements OnInit {
     });
   }
 
+  getPlanFeatures(plan: Producto): string[] {
+    const nombre = (plan.nombre || '').toLowerCase();
+    const precio = plan.precio ?? 0;
+
+    // Base para todos
+    const base = [
+      'Acceso a las noticias',
+      'Buscar noticias por nombre',
+      'Buscar noticias por categoría'
+    ];
+
+    // 1) PLAN FREE
+    if (nombre.includes('free') || nombre.includes('gratis') || precio === 0) {
+      return base;
+    }
+
+    // 2) PLAN CLÁSICO MENSUAL 14.99
+    if (nombre.includes('clásico') || nombre.includes('clasico') || Math.abs(precio - 14.99) < 0.01) {
+      return [
+        ...base,
+        'Buscar noticias por fecha',
+        'Descargar datos en CSV',
+        'Crear noticias'
+      ];
+    }
+
+    // 3) PLAN PREMIUM MENSUAL 29.99
+    if (nombre.includes('premium mensual') || (nombre.includes('premium') && Math.abs(precio - 29.99) < 0.01)) {
+      return [
+        ...base,
+        'Buscar noticias por fecha',
+        'Descargar datos en CSV',
+        'Crear noticias',
+        'Descargar datos CSV filtrando por fecha y categoría',
+        'Realizar ETL de la data descargada',
+        'Data Smart con 4 dimensiones'
+      ];
+    }
+
+    // 4) PLAN PREMIUM ANUAL 249.99
+    if (nombre.includes('anual') || Math.abs(precio - 249.99) < 0.5) {
+      return [
+        ...base,
+        'Buscar noticias por fecha',
+        'Descargar datos en CSV',
+        'Crear noticias',
+        'Descargar datos CSV filtrando por fecha y categoría',
+        'Realizar ETL de la data descargada',
+        'Data Smart con 4 dimensiones',
+        '% de descuento frente al plan mensual'
+      ];
+    }
+
+    // Fallback para cualquier otro producto/plan
+    return base;
+  }
 
 
   irAlPanel() {

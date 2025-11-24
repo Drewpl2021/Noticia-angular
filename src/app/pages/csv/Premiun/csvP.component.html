@@ -1,0 +1,75 @@
+<main class="container csv-panel">
+  <h1>Exportar noticias a CSV</h1>
+  <p class="muted">
+    Descarga los artículos según diferentes filtros: todo, por categorías, por rango de fechas o combinando ambos.
+  </p>
+
+  <section class="card">
+    <h2>1. Exportar todo</h2>
+    <p class="muted">Descarga todos los artículos sin filtros.</p>
+    <button class="btn primary" (click)="exportAll()" [disabled]="loading()">
+      Exportar todo
+    </button>
+  </section>
+
+  <section class="card">
+    <h2>2. Exportar por categorías</h2>
+    <p class="muted">Selecciona una o varias categorías.</p>
+
+    <div class="row" *ngIf="categories$ | async as cats">
+      <button type="button"
+              class="chip"
+              *ngFor="let c of cats"
+              [class.active]="isSelected(c)"
+              (click)="toggleCategory(c)">
+        {{ c }}
+      </button>
+    </div>
+
+    <button class="btn" (click)="exportByCategories()" [disabled]="loading()">
+      Exportar categorías seleccionadas
+    </button>
+  </section>
+
+  <section class="card">
+    <h2>3. Exportar por fechas</h2>
+    <p class="muted">Rango de fechas (fecha de publicación).</p>
+
+    <div class="dates">
+      <label>
+        <span>Desde</span>
+        <input type="date" [formControl]="form.controls.desde">
+      </label>
+      <span>–</span>
+      <label>
+        <span>Hasta</span>
+        <input type="date" [formControl]="form.controls.hasta">
+      </label>
+    </div>
+
+    <button class="btn" (click)="exportByDates()" [disabled]="loading()">
+      Exportar por rango de fechas
+    </button>
+  </section>
+
+  <section class="card">
+    <h2>4. Exportar por categoría + fechas</h2>
+    <p class="muted">Filtra por una categoría específica dentro de un rango de fechas.</p>
+
+    <div class="filters-inline" *ngIf="categories$ | async as cats">
+      <select [formControl]="form.controls.categoriaSingle">
+        <option [ngValue]="null">Selecciona categoría...</option>
+        <option *ngFor="let c of cats" [ngValue]="c">{{ c }}</option>
+      </select>
+
+      <input type="date" [formControl]="form.controls.desde">
+      <input type="date" [formControl]="form.controls.hasta">
+    </div>
+
+    <button class="btn" (click)="exportByFilters()" [disabled]="loading()">
+      Exportar con filtros
+    </button>
+  </section>
+
+  <p class="status" *ngIf="message()">{{ message() }}</p>
+</main>

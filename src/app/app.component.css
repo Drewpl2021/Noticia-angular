@@ -294,3 +294,227 @@ etc.
   }
 }
 
+/* ===== OVERLAY GENERAL ===== */
+
+.plans-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: auto;
+}
+
+/* Fondo oscuro difuminado */
+.plans-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,.55);
+  backdrop-filter: blur(4px);
+}
+
+/* ===== MODAL ===== */
+
+.plans-modal {
+  position: relative;
+  z-index: 1;
+  max-width: 960px;
+  width: 100%;
+  margin: 1.5rem;
+  border-radius: 18px;
+  background: var(--panel);
+  border: var(--border);
+  box-shadow: var(--shadow-lg, 0 18px 45px rgba(0,0,0,.35));
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  animation: plansFadeUp .22s ease-out;
+}
+
+@keyframes plansFadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* ===== HEADER DEL MODAL ===== */
+
+.plans-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: .9rem 1.25rem .7rem;
+  border-bottom: var(--border);
+}
+
+.plans-header h2 {
+  margin: 0;
+  font-size: 1.25rem;
+}
+
+.icon-btn {
+  border: none;
+  background: transparent;
+  padding: .25rem;
+  cursor: pointer;
+  font-size: 1.2rem;
+  line-height: 1;
+  color: var(--muted, #aaa);
+}
+
+.icon-btn:hover {
+  color: var(--txt);
+}
+
+/* ===== CUERPO ===== */
+
+.plans-body {
+  padding: 1rem 1.25rem 1.25rem;
+}
+
+/* Mensajes */
+
+.plans-loading,
+.plans-error,
+.plans-empty {
+  padding: .8rem 1rem;
+  border-radius: 12px;
+  font-size: .9rem;
+}
+
+.plans-loading {
+  background: var(--chip);
+}
+
+.plans-error {
+  background: rgba(244,67,54,.12);
+  color: var(--danger, #e53935);
+}
+
+.plans-empty {
+  background: var(--chip);
+}
+
+/* ===== GRID DE PLANES ===== */
+
+.plans-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 1rem;
+  margin-top: .75rem;
+}
+
+/* ===== CARD DE PLAN ===== */
+
+.plan-card {
+  position: relative;
+  border-radius: 16px;
+  padding: 1rem .95rem 1.15rem;
+  background: radial-gradient(circle at 0 0,
+  rgba(255,255,255,.05),
+  transparent 55%)
+  , var(--chip);
+  border: var(--border);
+  box-shadow: var(--shadow);
+  display: flex;
+  flex-direction: column;
+  gap: .4rem;
+  transition:
+    transform .14s ease,
+    box-shadow .14s ease,
+    border-color .14s ease,
+    background .14s ease;
+}
+
+.plan-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 16px 32px rgba(0,0,0,.24);
+  border-color: var(--accent, #1976d2);
+}
+
+/* Título y descripción */
+
+.plan-card h3 {
+  margin: 0;
+  font-size: 1.05rem;
+}
+
+.plan-desc {
+  margin: 0;
+  font-size: .86rem;
+  color: var(--muted);
+}
+
+/* Precio */
+
+.plan-price {
+  margin-top: .3rem;
+  font-size: 1.3rem;
+  font-weight: 600;
+}
+
+.plan-period {
+  font-size: .8rem;
+  margin-left: .2rem;
+  color: var(--muted);
+}
+
+/* Lista de features */
+
+.plan-features {
+  margin: .4rem 0 0;
+  padding: 0;
+  list-style: none;
+  font-size: .84rem;
+  display: flex;
+  flex-direction: column;
+  gap: .18rem;
+}
+
+.plan-features li::before {
+  content: "✔";
+  margin-right: .4rem;
+  font-size: .8rem;
+  color: var(--success, #2e7d32);
+}
+
+/* Botón del plan */
+
+.plan-btn {
+  margin-top: .6rem;
+  align-self: flex-start;
+  border-radius: 999px;
+  padding: .4rem 1.1rem;
+  border: none;
+  background: var(--accent, #1976d2);
+  color: var(--on-accent, #fff);
+  font-size: .86rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.plan-btn:hover {
+  filter: brightness(1.05);
+}
+
+/* ===== RESPONSIVE ===== */
+
+@media (max-width: 700px) {
+  .plans-modal {
+    margin: 1rem;
+  }
+
+  .plans-header {
+    padding-inline: .9rem;
+  }
+
+  .plans-body {
+    padding-inline: .9rem;
+  }
+}

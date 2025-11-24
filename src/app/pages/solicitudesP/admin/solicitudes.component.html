@@ -1,0 +1,122 @@
+<main class="container admin-solicitudes">
+
+  <section class="card header">
+    <h1>Panel de solicitudes de noticias</h1>
+    <p class="muted">
+      Revisa, aprueba o rechaza las solicitudes enviadas por los usuarios.
+    </p>
+
+    <div class="filters">
+      <label>
+        Estado:
+        <select [formControl]="estadoControl">
+          <option *ngFor="let e of estados" [value]="e">
+            {{ e }}
+          </option>
+        </select>
+      </label>
+      <span class="hint">Selecciona un estado para filtrar.</span>
+    </div>
+
+    <div class="status-line">
+      <span class="loading" *ngIf="loading()">Cargando solicitudes...</span>
+      <span class="ok" *ngIf="message()">{{ message() }}</span>
+      <span class="error" *ngIf="errorMsg()">{{ errorMsg() }}</span>
+    </div>
+  </section>
+
+  <section class="card list">
+    <h2>Solicitudes</h2>
+
+    <ng-container *ngIf="solicitudes$ | async as solicitudes; else loadingTpl">
+
+      <div *ngIf="solicitudes.length; else emptyTpl" class="cards-grid">
+
+        <article class="sol-card" *ngFor="let s of solicitudes; trackBy: trackById">
+
+          <!-- Header: id + estado -->
+          <header class="sol-card-header">
+            <span class="sol-id">#{{ s.id }}</span>
+            <span class="badge"
+                  [class.pending]="(s.estado || 'PENDIENTE') === 'PENDIENTE'"
+                  [class.approved]="s.estado === 'APROBADA'"
+                  [class.rejected]="s.estado === 'RECHAZADA'">
+            {{ s.estado || 'PENDIENTE' }}
+          </span>
+          </header>
+
+          <!-- Bloque principal: imagen + texto -->
+          <div class="sol-main">
+            <div class="thumb-wrap">
+              <img
+                [src]="s.imagenUrl || 'assets/placeholder-4x3.jpg'"
+                [alt]="s.titulo">
+            </div>
+
+            <div class="sol-text">
+              <h3 class="sol-title">{{ s.titulo }}</h3>
+              <p class="sol-content">
+                {{ s.contenido }}
+              </p>
+            </div>
+          </div>
+
+          <!-- Meta inferior: autor, fecha, categorías, link -->
+          <div class="sol-meta-row">
+            <div class="left">
+              <div class="author">
+                <span class="label">Autor</span>
+                <span class="value">{{ s.autor }}</span>
+              </div>
+              <div class="date">
+                {{ s.fechaPublicado | date:'dd/MM/yyyy HH:mm' }}
+              </div>
+            </div>
+
+            <div class="right">
+              <div class="pill-row">
+              <span class="pill" *ngFor="let cat of (s.categorias || '').split(',')">
+                {{ cat.trim() }}
+              </span>
+              </div>
+              <a class="orig-link"
+                 *ngIf="s.url"
+                 [href]="s.url"
+                 target="_blank"
+                 rel="noopener">
+                Ver fuente ↗
+              </a>
+            </div>
+          </div>
+
+          <!-- Acciones -->
+          <footer class="sol-actions">
+            <button class="btn-ghost success"
+                    (click)="aprobar(s)"
+                    [disabled]="isRowProcessing(s) || s.estado === 'APROBADA'">
+              {{ isRowProcessing(s) && s.estado !== 'APROBADA' ? '...' : 'Aprobar' }}
+            </button>
+
+            <button class="btn-ghost danger"
+                    (click)="rechazar(s)"
+                    [disabled]="isRowProcessing(s) || s.estado === 'RECHAZADA'">
+              {{ isRowProcessing(s) && s.estado !== 'RECHAZADA' ? '...' : 'Rechazar' }}
+            </button>
+          </footer>
+        </article>
+
+      </div>
+
+    </ng-container>
+
+    <ng-template #emptyTpl>
+      <p class="muted">No hay solicitudes para este filtro.</p>
+    </ng-template>
+
+    <ng-template #loadingTpl>
+      <p class="muted">Cargando solicitudes...</p>
+    </ng-template>
+  </section>
+
+
+</main>

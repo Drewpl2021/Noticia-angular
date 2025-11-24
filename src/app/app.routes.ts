@@ -27,6 +27,24 @@ export const routes: Routes = [
     loadComponent: () =>
       import('./pages/noticias/Premiun/noticiasP.component').then(m => m.NoticiasPComponent)
   },
+  {
+    path: 'csvp',
+    canActivate: [authGuard],
+    loadComponent: () =>
+      import('./pages/csv/Premiun/csvP.component').then(m => m.CsvPComponent)
+  },
+  {
+    path: 'crearNoticia',
+    canActivate: [authGuard],
+    loadComponent: () =>
+      import('./pages/solicitudesP/solicitudes-noticias.component').then(m => m.SolicitudesNoticiasComponent)
+  },
+  {
+    path: 'aprobar',
+    canActivate: [authGuard, adminGuard],
+    loadComponent: () =>
+      import('./pages/solicitudesP/admin/solicitudes.component').then(m => m.SolicitudesAdminComponent)
+  },
   // ====== RUTAS PROTEGIDAS (login + admin) ======
   {
     path: 'admin',

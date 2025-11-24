@@ -44,10 +44,11 @@
           </p>
 
           <ul class="plan-features">
-            <li>Acceso completo a Noticias360</li>
-            <li>Navegación sin publicidad</li>
-            <li>Contenido exclusivo para miembros</li>
+            <li *ngFor="let feature of getPlanFeatures(plan)">
+              {{ feature }}
+            </li>
           </ul>
+
         </div>
 
         <div *ngIf="planes().length === 0 && !planesLoading()" class="info-msg">
