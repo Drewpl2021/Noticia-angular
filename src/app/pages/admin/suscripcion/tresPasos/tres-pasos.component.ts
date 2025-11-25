@@ -336,7 +336,8 @@ export class TresPasosComponent implements OnInit, OnDestroy {
     const base = [
       'Acceso a las noticias',
       'Buscar noticias por nombre',
-      'Buscar noticias por categoría'
+      'Buscar noticias por categoría',
+      'Acceso a Nova360'
     ];
 
     if (nombre.includes('free') || nombre.includes('gratis') || precio === 0) {
@@ -348,7 +349,8 @@ export class TresPasosComponent implements OnInit, OnDestroy {
         ...base,
         'Buscar noticias por fecha',
         'Descargar datos en CSV',
-        'Crear noticias'
+        'Crear noticias',
+        'Acceso a Nova360'
       ];
     }
 
@@ -360,7 +362,8 @@ export class TresPasosComponent implements OnInit, OnDestroy {
         'Crear noticias',
         'Descargar datos CSV filtrando por fecha y categoría',
         'Realizar ETL de la data descargada',
-        'Data Smart con 4 dimensiones'
+        'Data Smart con 4 dimensiones',
+        'Acceso a Nova360'
       ];
     }
 
@@ -373,6 +376,7 @@ export class TresPasosComponent implements OnInit, OnDestroy {
         'Descargar datos CSV filtrando por fecha y categoría',
         'Realizar ETL de la data descargada',
         'Data Smart con 4 dimensiones',
+        'Acceso a Nova360',
         '% de descuento frente al plan mensual'
       ];
     }
