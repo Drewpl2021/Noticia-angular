@@ -121,7 +121,8 @@ export class AppComponent {
     const base = [
       'Acceso a las noticias',
       'Buscar noticias por nombre',
-      'Buscar noticias por categoría'
+      'Buscar noticias por categoría',
+      'Acceso a Nova360'
     ];
 
     // 1) PLAN FREE
@@ -135,7 +136,7 @@ export class AppComponent {
         ...base,
         'Buscar noticias por fecha',
         'Descargar datos en CSV',
-        'Crear noticias'
+        'Crear noticias',
       ];
     }
 
