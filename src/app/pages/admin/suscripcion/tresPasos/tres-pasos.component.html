@@ -19,7 +19,6 @@
 
   <!-- Contenido -->
   <section class="suscripcion-body">
-
     <!-- PASO 1 -->
     <ng-container *ngIf="step() === 1">
       <div *ngIf="planesLoading()" class="info-msg">Cargando planes...</div>
@@ -30,17 +29,29 @@
           class="plan-card"
           *ngFor="let plan of planes()"
           [class.selected]="selectedPlan()?.id === plan.id"
+          [class.disabled]="isPlanDisabled(plan)"
           (click)="seleccionarPlan(plan)">
 
-          <h3>{{ plan.nombre }}</h3>
+          <div class="plan-header-row">
+            <h3>{{ plan.nombre }}</h3>
+
+            <!-- Badges -->
+            <span class="plan-badge current" *ngIf="isUserPlan(plan)">
+          Plan actual
+        </span>
+            <span class="plan-badge blocked" *ngIf="!isUserPlan(plan) && isPlanDisabled(plan)">
+          No disponible
+        </span>
+          </div>
+
           <p class="plan-desc">{{ plan.descripcion }}</p>
 
           <p class="plan-price">
             S/. {{ plan.precio | number:'1.2-2' }}
             <span class="plan-period"
                   *ngIf="plan.nombre && plan.nombre.toLowerCase().includes('mensual')">
-              /mes
-            </span>
+          /mes
+        </span>
           </p>
 
           <ul class="plan-features">
@@ -57,13 +68,23 @@
       </div>
 
       <div class="step-actions">
+        <button
+          type="button"
+          class="btn danger"
+          (click)="openCancelConfirm()">
+          Cancelar suscripción
+        </button>
+
+
         <button class="btn primary"
                 [disabled]="!selectedPlan()"
                 (click)="continuarDesdeStep1()">
           Continuar ➜
         </button>
       </div>
+
     </ng-container>
+
 
     <!-- PASO 2 -->
     <ng-container *ngIf="step() === 2 && selectedPlan() as planSel">
@@ -147,8 +168,8 @@
             S/. {{ planSel.precio | number:'1.2-2' }}
             <span class="plan-period"
                   *ngIf="planSel.nombre && planSel.nombre.toLowerCase().includes('mensual')">
-          /mes
-        </span>
+              /mes
+            </span>
           </p>
         </aside>
 
@@ -180,15 +201,29 @@
             Al confirmar, se procesará el pago mediante tu pasarela Culqi en el backend.
           </p>
 
-          <!-- Overlay de éxito -->
+          <!-- 🔹 Overlay de ÉXITO con contador y logout -->
           <div class="success-overlay" *ngIf="showSuccess()">
             <div class="success-modal">
               <div class="success-icon">✔</div>
               <h2>Pago exitoso</h2>
               <p>{{ paymentMessage() }}</p>
+
+              <p class="success-hint">
+                Por favor vuelva a iniciar sesión mientras cargamos los datos.
+              </p>
+
+              <p class="success-countdown">
+                La sesión se cerrará automáticamente en
+                <strong>{{ logoutCountdown() }}</strong> segundos.
+              </p>
+
+              <div class="success-actions">
+                <button class="btn primary" (click)="confirmLogoutAfterPurchase()">
+                  Aceptar y cerrar sesión ahora
+                </button>
+              </div>
             </div>
           </div>
-
 
           <!-- 🔹 FORM TARJETA (cuando método = card) -->
           <form
@@ -241,6 +276,7 @@
               </button>
             </div>
           </form>
+
           <!-- Overlay de ERROR -->
           <div class="error-overlay" *ngIf="showCardError()">
             <div class="error-modal">
@@ -250,8 +286,6 @@
               <button class="btn primary" (click)="cerrarCardError()">Entendido</button>
             </div>
           </div>
-
-
 
           <!-- 🔹 BOTÓN SIMPLE (Yape / Plin) -->
           <div class="step-actions" *ngIf="paymentMethod() !== 'card'">
@@ -267,15 +301,50 @@
             </button>
           </div>
 
-          <div class="step-actions" *ngIf="paymentStatus() === 'success'">
-            <button type="button" class="btn" (click)="irAlPanel()">
-              Ir al panel principal
-            </button>
-          </div>
         </section>
       </div>
     </ng-container>
 
-
   </section>
+</div>
+<!-- 🔹 Modal de CONFIRMACIÓN de cancelación -->
+<div class="cancel-overlay" *ngIf="showCancelConfirm()">
+  <div class="cancel-modal">
+    <div class="cancel-icon">⚠</div>
+    <h2>Cancelar suscripción</h2>
+
+    <p class="cancel-text">
+      ¿Estás seguro de que quieres cancelar tu suscripción?
+    </p>
+    <p class="cancel-hint">
+      No se te cobrará el siguiente período de facturación.
+    </p>
+
+    <div class="cancel-actions">
+      <button class="btn ghost" type="button" (click)="closeCancelConfirm()">
+        No, volver
+      </button>
+      <button class="btn danger" type="button" (click)="confirmCancelSubscription()">
+        Sí, cancelar suscripción
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- 🔹 Modal de RESULTADO de cancelación -->
+<div class="cancel-overlay" *ngIf="showCancelSuccess()">
+  <div class="cancel-modal">
+    <div class="cancel-success-icon">✔</div>
+    <h2>Suscripción cancelada</h2>
+
+    <p class="cancel-text">
+      Su suscripción fue cancelada. No se le cobrará el siguiente mes.
+    </p>
+
+    <div class="cancel-actions">
+      <button class="btn primary" type="button" (click)="closeCancelSuccess()">
+        Entendido
+      </button>
+    </div>
+  </div>
 </div>

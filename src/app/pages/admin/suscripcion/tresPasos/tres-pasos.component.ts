@@ -1,5 +1,5 @@
 // src/app/pages/suscripcion/tresPasos/tres-pasos.component.ts
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, OnInit, OnDestroy, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { ReactiveFormsModule, FormBuilder, Validators, FormGroup } from '@angular/forms';
@@ -20,7 +20,7 @@ import { CrearMembresiaRequest } from '../../../../core/models/payment.model';
   styleUrls: ['./tres-pasos.component.css'],
   imports: [CommonModule, ReactiveFormsModule, RouterLink]
 })
-export class TresPasosComponent implements OnInit {
+export class TresPasosComponent implements OnInit, OnDestroy {
 
   // planes
   planes = signal<Producto[]>([]);
@@ -40,6 +40,18 @@ export class TresPasosComponent implements OnInit {
   paymentStatus = signal<'idle' | 'success' | 'error'>('idle');
   paymentMessage = signal<string | null>(null);
   paymentMethod = signal<'card' | 'yape' | 'plin'>('card');
+
+  // overlays
+  showSuccess = signal(false);
+  showCardError = signal(false);
+  cardError = signal<string | null>(null);
+
+  // 🔹 contador para logout después de éxito
+  logoutCountdown = signal(5);
+  private logoutTimerId: any = null;
+
+  // 🔹 plan actual del usuario (nombre tal como viene del backend)
+  currentUserPlanName = signal<string | null>(null);
 
   constructor(
     private route: ActivatedRoute,
@@ -72,6 +84,9 @@ export class TresPasosComponent implements OnInit {
       return;
     }
 
+    // guardar el nombre del plan actual del usuario
+    this.currentUserPlanName.set(this.auth.getCurrentPlan());
+
     // precargar form con datos del usuario si tienes
     const u = this.auth.user();
     this.customerForm.patchValue({
@@ -90,10 +105,9 @@ export class TresPasosComponent implements OnInit {
 
         if (preselectedId && !Number.isNaN(preselectedId)) {
           const found = activos.find(p => p.id === preselectedId) || null;
-          if (found) {
+          // solo preseleccionamos si NO está bloqueado
+          if (found && !this.isPlanDisabled(found)) {
             this.selectedPlan.set(found);
-            // puedes dejarlo en step 1 igual, o saltar al 2:
-            // this.step.set(2);
           }
         }
       },
@@ -105,8 +119,74 @@ export class TresPasosComponent implements OnInit {
     });
   }
 
+  ngOnDestroy(): void {
+    this.clearLogoutCountdown();
+  }
+
+  // ========== HELPERS DE PLANES (bloqueos) ==========
+
+  private normalizeName(name: string | null | undefined): string {
+    if (!name) return '';
+    return name
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .toLowerCase()
+      .trim();
+  }
+
+  // ¿El plan que viene del backend es free?
+  private isFreePlan(plan: Producto): boolean {
+    const nombre = this.normalizeName(plan.nombre);
+    const precio = plan.precio ?? 0;
+    return (
+      nombre.includes('free') ||
+      nombre.includes('gratis') ||
+      precio === 0
+    );
+  }
+
+  // ¿El plan actual del usuario es free?
+  private isUserCurrentPlanFree(): boolean {
+    const current = this.normalizeName(this.currentUserPlanName());
+    if (!current) return false;
+    return current.includes('free') || current.includes('gratis');
+  }
+
+  // ¿Este plan es exactamente el plan actual del usuario?
+  isUserPlan(plan: Producto): boolean {
+    const current = this.normalizeName(this.currentUserPlanName());
+    const planName = this.normalizeName(plan.nombre);
+    if (!current || !planName) return false;
+    return current === planName;
+  }
+
+  // ¿El usuario tiene algún plan distinto a Free?
+  private userHasPaidPlan(): boolean {
+    const current = this.currentUserPlanName();
+    if (!current) return false;
+    // si NO es free, asumimos que es un plan de pago
+    return !this.isUserCurrentPlanFree();
+  }
+
+  // 🔒 Lógica final de bloqueo:
+  // - Si es su propio plan actual → bloqueado
+  // - Si ya tiene un plan de pago → bloqueamos también el plan Free
+  isPlanDisabled(plan: Producto): boolean {
+    if (this.isUserPlan(plan)) {
+      return true;
+    }
+
+    if (this.userHasPaidPlan() && this.isFreePlan(plan)) {
+      return true;
+    }
+
+    return false;
+  }
+
   // ====== PASO 1: seleccionar plan ======
   seleccionarPlan(plan: Producto) {
+    // si el plan está bloqueado, no hacemos nada
+    if (this.isPlanDisabled(plan)) return;
     this.selectedPlan.set(plan);
   }
 
@@ -139,9 +219,6 @@ export class TresPasosComponent implements OnInit {
     this.paymentStatus.set('idle');
     this.paymentMessage.set(null);
   }
-
-
-// ...
 
   pagar() {
     const plan = this.selectedPlan();
@@ -204,7 +281,7 @@ export class TresPasosComponent implements OnInit {
             'No se pudo validar la tarjeta. Verifica los datos.';
 
           this.cardError.set(msg);
-          this.showCardError.set(true);    // 🔴 aquí se abre el modal
+          this.showCardError.set(true);
           this.payLoading.set(false);
         }
       });
@@ -224,8 +301,6 @@ export class TresPasosComponent implements OnInit {
     }
   }
 
-
-
   private sendCrearMembresia(body: CrearMembresiaRequest) {
     this.paymentApi.crearMembresia(body).subscribe({
       next: (resp) => {
@@ -233,12 +308,9 @@ export class TresPasosComponent implements OnInit {
           this.paymentStatus.set('success');
           this.paymentMessage.set(resp.message || 'Pago realizado correctamente.');
 
+          // Mostrar overlay de éxito y arrancar countdown
           this.showSuccess.set(true);
-
-          setTimeout(() => {
-            this.router.navigate(['/']);
-          }, 2500);
-
+          this.startLogoutCountdown();
         } else {
           this.paymentStatus.set('error');
           this.paymentMessage.set(resp.message || 'No se pudo procesar el pago.');
@@ -251,31 +323,26 @@ export class TresPasosComponent implements OnInit {
 
         this.paymentStatus.set('error');
         this.paymentMessage.set('Ocurrió un error al procesar el pago/membresía.');
-
-        // aquí podrías usar otro overlay si quieres,
-        // pero este ya es error de backend, no de tarjeta
         this.payLoading.set(false);
       }
     });
   }
 
+  // ====== FEATURES POR PLAN (como ya tenías) ======
   getPlanFeatures(plan: Producto): string[] {
     const nombre = (plan.nombre || '').toLowerCase();
     const precio = plan.precio ?? 0;
 
-    // Base para todos
     const base = [
       'Acceso a las noticias',
       'Buscar noticias por nombre',
       'Buscar noticias por categoría'
     ];
 
-    // 1) PLAN FREE
     if (nombre.includes('free') || nombre.includes('gratis') || precio === 0) {
       return base;
     }
 
-    // 2) PLAN CLÁSICO MENSUAL 14.99
     if (nombre.includes('clásico') || nombre.includes('clasico') || Math.abs(precio - 14.99) < 0.01) {
       return [
         ...base,
@@ -285,7 +352,6 @@ export class TresPasosComponent implements OnInit {
       ];
     }
 
-    // 3) PLAN PREMIUM MENSUAL 29.99
     if (nombre.includes('premium mensual') || (nombre.includes('premium') && Math.abs(precio - 29.99) < 0.01)) {
       return [
         ...base,
@@ -298,7 +364,6 @@ export class TresPasosComponent implements OnInit {
       ];
     }
 
-    // 4) PLAN PREMIUM ANUAL 249.99
     if (nombre.includes('anual') || Math.abs(precio - 249.99) < 0.5) {
       return [
         ...base,
@@ -312,22 +377,66 @@ export class TresPasosComponent implements OnInit {
       ];
     }
 
-    // Fallback para cualquier otro producto/plan
     return base;
   }
 
+  // ====== Logout después de compra ======
+  private startLogoutCountdown() {
+    this.clearLogoutCountdown();
+    this.logoutCountdown.set(5);
 
-  irAlPanel() {
-    this.router.navigate(['/']);
+    this.logoutTimerId = setInterval(() => {
+      const current = this.logoutCountdown();
+      if (current <= 1) {
+        this.clearLogoutCountdown();
+        this.handleLogoutAfterPurchase();
+      } else {
+        this.logoutCountdown.set(current - 1);
+      }
+    }, 1000);
   }
 
-  showSuccess = signal(false);
-  showCardError = signal(false);
-  cardError = signal<string | null>(null);
+  private clearLogoutCountdown() {
+    if (this.logoutTimerId) {
+      clearInterval(this.logoutTimerId);
+      this.logoutTimerId = null;
+    }
+  }
+
+  private handleLogoutAfterPurchase() {
+    this.auth.logout();
+    this.showSuccess.set(false);
+    this.router.navigate(['/login']);
+  }
+
+  confirmLogoutAfterPurchase() {
+    this.clearLogoutCountdown();
+    this.handleLogoutAfterPurchase();
+  }
 
   cerrarCardError() {
     this.showCardError.set(false);
     this.cardError.set(null);
   }
 
+  openCancelConfirm() {
+    this.showCancelConfirm.set(true);
+  }
+
+  closeCancelConfirm() {
+    this.showCancelConfirm.set(false);
+  }
+
+  confirmCancelSubscription() {
+    // aquí podrías llamar a un servicio al backend en el futuro
+    this.showCancelConfirm.set(false);
+    this.showCancelSuccess.set(true);
+  }
+
+  closeCancelSuccess() {
+    this.showCancelSuccess.set(false);
+  }
+
+  showCancelConfirm = signal(false);
+  showCancelSuccess = signal(false);
 }

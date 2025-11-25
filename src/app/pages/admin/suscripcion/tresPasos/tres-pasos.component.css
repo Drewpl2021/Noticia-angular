@@ -262,20 +262,61 @@
 
 /* ===== CONTENEDOR GENERAL ===== */
 
+/* ===== CONTENEDOR GENERAL ===== */
 .suscripcion-page {
   max-width: 960px;
-  margin: 1.8rem auto;
-  padding: 1rem 1.25rem 2rem;
+  margin: 2rem auto;
+  padding: 1.2rem 1.4rem 2.3rem;
+
+  /* Fondo sutil detrás del proceso */
+  background: var(--panel);
+  border-radius: 20px;
+  border: var(--border);
+  box-shadow: 0 18px 40px rgba(0,0,0,0.08);
 }
 
-/* ===== HEADER ===== */
-
+/* ===== HEADER BONITO ===== */
 .suscripcion-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: .9rem;
   gap: .75rem;
+
+  padding: 1rem 1.2rem;
+  margin-bottom: 1.2rem;
+
+  background: var(--chip);
+  border-radius: 16px;
+  border: var(--border);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+}
+
+/* Título */
+.suscripcion-header h1 {
+  margin: 0;
+  font-size: 1.65rem;
+  font-weight: 700;
+  color: var(--txt);
+}
+
+/* Botón volver */
+.suscripcion-header .link-volver {
+  font-size: .9rem;
+  text-decoration: none;
+  padding: .4rem .85rem;
+  border-radius: 999px;
+  border: var(--border);
+  background: var(--panel);
+  color: var(--accent);
+  display: inline-flex;
+  align-items: center;
+  gap: .35rem;
+  transition: background .15s ease, transform .15s ease;
+}
+
+.suscripcion-header .link-volver:hover {
+  background: var(--chip);
+  transform: translateY(-1px);
 }
 
 .suscripcion-header h1 {
@@ -748,4 +789,188 @@
     opacity: 1;
     transform: translateY(0) scale(1);
   }
+}
+/* ===== PASO 2: CARD PARA DATOS DEL TITULAR ===== */
+
+.step2-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 2.1fr) minmax(0, 1.4fr);
+  gap: 1.5rem;
+  align-items: flex-start;
+}
+
+/* Hacemos que el formulario también sea una tarjeta */
+.customer-form {
+  background: var(--chip);
+  border-radius: 14px;
+  padding: 1rem 1.25rem 1.3rem;
+  border: var(--border);
+  box-shadow: 0 14px 30px rgba(0,0,0,0.08);
+}
+
+.customer-form h2 {
+  margin: 0 0 .8rem;
+  font-size: 1.2rem;
+}
+
+/* Inputs dentro del card */
+.customer-form label {
+  display: flex;
+  flex-direction: column;
+  gap: .2rem;
+  font-size: .9rem;
+  margin-bottom: .6rem;
+}
+
+.customer-form input,
+.customer-form select {
+  padding: .42rem .6rem;
+  border-radius: 9px;
+  border: var(--border);
+  background: var(--panel);
+  color: var(--txt);
+}
+
+.customer-form input:focus,
+.customer-form select:focus {
+  outline: 2px solid var(--accent, #1976d2);
+  outline-offset: 1px;
+}
+
+/* Resumen del plan mantiene el mismo estilo de tarjeta */
+.plan-summary-card {
+  background: var(--chip);
+  border-radius: 14px;
+  padding: 1rem;
+  border: var(--border);
+  box-shadow: 0 14px 30px rgba(0,0,0,0.06);
+  display: flex;
+  flex-direction: column;
+  gap: .4rem;
+}
+/* fila de título + badge */
+.plan-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: .5rem;
+}
+
+/* Badges de plan */
+.plan-badge {
+  font-size: .75rem;
+  padding: .15rem .5rem;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  white-space: nowrap;
+}
+
+.plan-badge.current {
+  background: rgba(25, 118, 210, .12);
+  color: var(--accent, #1976d2);
+  border-color: rgba(25, 118, 210, .4);
+}
+
+.plan-badge.blocked {
+  background: rgba(158, 158, 158, .18);
+  color: var(--muted);
+  border-color: rgba(158, 158, 158, .5);
+}
+
+/* Estado deshabilitado del card */
+.plan-card.disabled {
+  opacity: .55;
+  cursor: not-allowed;
+  pointer-events: none;
+  transform: none !important;
+  box-shadow: none !important;
+}
+/* ===== Overlay genérico para cancelación ===== */
+.cancel-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.55);
+  backdrop-filter: blur(3px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+/* Card del modal */
+.cancel-modal {
+  background: var(--panel);
+  color: var(--txt);
+  padding: 2rem 2.3rem 1.8rem;
+  border-radius: 18px;
+  width: min(360px, 92vw);
+  text-align: center;
+  border: var(--border);
+  box-shadow: var(--shadow-lg, 0 18px 45px rgba(0,0,0,0.35));
+  animation: fadeUp .25s ease-out;
+}
+
+/* Icono de advertencia */
+.cancel-icon {
+  width: 75px;
+  height: 75px;
+  border-radius: 50%;
+  background: rgba(255, 193, 7, .16);
+  color: #ffb300;
+  font-size: 2.7rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1rem;
+  border: 2px solid rgba(255, 193, 7, .5);
+}
+
+/* Icono de éxito de cancelación */
+.cancel-success-icon {
+  width: 75px;
+  height: 75px;
+  border-radius: 50%;
+  background: rgba(46, 125, 50, .16);
+  color: var(--success, #2e7d32);
+  font-size: 3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1rem;
+  border: 2px solid rgba(46, 125, 50, .5);
+}
+
+.cancel-modal h2 {
+  margin: 0 0 .5rem;
+  font-size: 1.3rem;
+}
+
+.cancel-text {
+  margin: 0 0 .25rem;
+  font-size: .92rem;
+}
+
+.cancel-hint {
+  margin: 0 0 .4rem;
+  font-size: .86rem;
+  color: var(--muted);
+}
+
+.cancel-actions {
+  margin-top: .9rem;
+  display: flex;
+  justify-content: center;
+  gap: .6rem;
+  flex-wrap: wrap;
+}
+
+/* Botón rojo reutilizable */
+.btn.danger {
+  background: #e53935;
+  color: #fff;
+  border: none;
+}
+
+.btn.danger:hover {
+  filter: brightness(1.1);
 }

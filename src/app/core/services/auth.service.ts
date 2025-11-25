@@ -133,5 +133,9 @@ export class AuthService {
   isPlanFree(): boolean {
     return this.hasPlan('Plan Free');
   }
+  getCurrentPlan(): string | null {
+    const u = this.user();
+    return u?.plan ?? null;
+  }
 
 }
