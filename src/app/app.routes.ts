@@ -28,10 +28,40 @@ export const routes: Routes = [
       import('./pages/noticias/Premiun/noticiasP.component').then(m => m.NoticiasPComponent)
   },
   {
+    path: 'noticiasc',
+    canActivate: [authGuard],
+    loadComponent: () =>
+      import('./pages/noticias/Clasico/noticiasC.component').then(m => m.NoticiasCComponent)
+  },
+  {
+    path: 'noticiasf',
+    canActivate: [authGuard],
+    loadComponent: () =>
+      import('./pages/noticias/free/noticiasF.component').then(m => m.NoticiasFComponent)
+  },
+  {
+    path: 'etl',
+    canActivate: [authGuard],
+    loadComponent: () =>
+      import('./pages/etl/etl-articulos.component').then(m => m.EtlArticulosComponent)
+  },
+  {
+    path: 'datamart',
+    canActivate: [authGuard],
+    loadComponent: () =>
+      import('./pages/datamart/datamart-builder.component').then(m => m.DatamartBuilderComponent)
+  },
+  {
     path: 'csvp',
     canActivate: [authGuard],
     loadComponent: () =>
       import('./pages/csv/Premiun/csvP.component').then(m => m.CsvPComponent)
+  },
+  {
+    path: 'csvc',
+    canActivate: [authGuard],
+    loadComponent: () =>
+      import('./pages/csv/clasico/csvC.component').then(m => m.CsvCComponent)
   },
   {
     path: 'crearNoticia',

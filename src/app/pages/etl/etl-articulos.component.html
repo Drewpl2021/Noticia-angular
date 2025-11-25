@@ -1,0 +1,73 @@
+<main class="etl-container">
+
+  <!-- ===== Card: Subida de archivo ===== -->
+  <section class="card">
+    <h2>Importar CSV</h2>
+
+    <div class="file-picker">
+      <input type="file"
+             accept=".csv"
+             id="fileInput"
+             (change)="onFileChange($event)">
+      <label for="fileInput" class="btn">
+        Seleccionar archivo
+      </label>
+
+      <span class="file-name">{{ fileName() }}</span>
+    </div>
+
+    <button class="btn primary"
+            [disabled]="loading() || !selectedFile"
+            (click)="analizar()">
+      Analizar CSV
+    </button>
+
+    <p class="error" *ngIf="errorMsg()">{{ errorMsg() }}</p>
+    <p class="ok" *ngIf="successMsg()">{{ successMsg() }}</p>
+  </section>
+
+
+  <!-- ===== Resultado del ANÁLISIS ===== -->
+  <section class="card" *ngIf="analysis() as a">
+    <h2>Resultados del análisis</h2>
+
+    <p>Total filas: <strong>{{ a.totalRows }}</strong></p>
+
+    <table class="analysis-table">
+      <thead>
+      <tr>
+        <th>#</th>
+        <th>Columna</th>
+        <th>Vacíos</th>
+        <th>% Vacíos</th>
+        <th>Duplicados</th>
+        <th>% Duplicados</th>
+        <th>Usar</th>
+      </tr>
+      </thead>
+
+      <tbody>
+      <tr *ngFor="let col of columnsForTable; let i = index">
+        <td>{{ i + 1 }}</td>
+        <td>{{ col.name }}</td>
+        <td>{{ col.nullCount }}</td>
+        <td>{{ (col.nullPercent * 100) | number:'1.0-2' }}%</td>
+        <td>{{ col.duplicateCount }}</td>
+        <td>{{ (col.duplicatePercent * 100) | number:'1.0-2' }}%</td>
+
+        <td>
+          <input type="checkbox"
+                 [checked]="selectedColumns.has(col.name)"
+                 (change)="toggleColumn(col.name, $event)">
+        </td>
+      </tr>
+      </tbody>
+    </table>
+
+    <button class="btn primary"
+            [disabled]="loading()"
+            (click)="aplicar()">
+      Ejecutar ETL y Exportar CSV
+    </button>
+  </section>
+</main>

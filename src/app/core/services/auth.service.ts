@@ -14,6 +14,8 @@ export interface LoginResponse {
   lastName: string;
   id: number;
   role: string;       // "admin", "user", etc.
+  plan?: string;
+
 }
 
 export interface AuthUser {
@@ -22,6 +24,7 @@ export interface AuthUser {
   name: string;
   lastName: string;
   role: string;
+  plan?: string;
 }
 export interface LoggedUser {
   token: string;
@@ -60,7 +63,8 @@ export class AuthService {
           token: res.token,
           name: res.name,
           lastName: res.lastName,
-          role: res.role
+          role: res.role,
+          plan: res.plan
         };
 
         // Guardamos token y usuario
@@ -93,6 +97,41 @@ export class AuthService {
 
   isAdmin(): boolean {
     return this.hasRole('admin');  // porque backend manda "admin"
+  }
+
+
+  // =============================
+  // Helpers por PLAN de suscripción
+  // =============================
+  private normalizePlan(plan: string): string {
+    // normaliza: quita tildes, pasa a minúsculas, recorta espacios
+    return plan
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '') // quita acentos
+      .toLowerCase()
+      .trim();
+  }
+
+  hasPlan(plan: string): boolean {
+    const u = this.user();
+    if (!u || !u.plan) return false;
+    return this.normalizePlan(u.plan) === this.normalizePlan(plan);
+  }
+
+  isPremiumMensual(): boolean {
+    return this.hasPlan('Premium Mensual');
+  }
+
+  isPremiumAnual(): boolean {
+    return this.hasPlan('Premium Anual');
+  }
+
+  isClasicoMensual(): boolean {
+    return this.hasPlan('Clásico Mensual');
+  }
+
+  isPlanFree(): boolean {
+    return this.hasPlan('Plan Free');
   }
 
 }

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ApiService } from './api.service';
 import { Observable } from 'rxjs';
-import { NewsPage, NewsItem } from '../models/news.model';
+import {NewsPage, NewsItem, ArticuloImportResult} from '../models/news.model';
 
 @Injectable({
   providedIn: 'root'
@@ -95,5 +95,18 @@ export class NewsService extends ApiService {
         size
       }
     });
+  }
+
+  importCsv(file: File, columnas: string[] = []): Observable<ArticuloImportResult> {
+    const form = new FormData();
+    form.append('file', file);
+
+    columnas.forEach(col => form.append('columnas', col));
+    // si columnas está vacío, el backend tomará todas
+
+    return this.http.post<ArticuloImportResult>(
+      `${this.baseUrl}/articulos/import-csv`,
+      form
+    );
   }
 }

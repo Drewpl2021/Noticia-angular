@@ -51,3 +51,14 @@ export interface NewsPage {
   numberOfElements?: number;
   empty?: boolean;
 }
+export interface ArticuloImportResult {
+  totalRows: number;
+  inserted: number;
+  updated: number;
+  skipped: number;
+  errors: number;
+  duplicatesInFile: number;
+  duplicatesInDb: number;
+  nullCounts: { [col: string]: number };
+  nullPercents: { [col: string]: number }; // 0–1
+}

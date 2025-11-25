@@ -1,0 +1,17 @@
+<main class="container csv-panel">
+  <h1>Exportar noticias a CSV</h1>
+  <p class="muted">
+    Descarga los artículos.
+  </p>
+
+  <section class="card">
+    <h2>1. Exportar todo</h2>
+    <p class="muted">Descarga todos los artículos.</p>
+    <button class="btn primary" (click)="exportAll()" [disabled]="loading()">
+      Exportar todo
+    </button>
+  </section>
+
+
+  <p class="status" *ngIf="message()">{{ message() }}</p>
+</main>

@@ -1,7 +1,37 @@
 <main class="container" style="padding:1rem 0 2rem 0">
+
+  <!-- ====== BARRA DE FILTROS ====== -->
+  <form class="filter-bar" [formGroup]="filterForm" (ngSubmit)="onApplyFilters()">
+    <div class="filter-row">
+
+      <!-- Buscar por texto -->
+      <input
+        type="search"
+        formControlName="q"
+        placeholder="Buscar noticias por título o texto..."
+        aria-label="Buscar noticias">
+
+      <!-- Botones -->
+      <button type="submit" class="btn primary">
+        Aplicar filtros
+      </button>
+      <button type="button" class="btn ghost" (click)="resetFilters()">
+        Limpiar
+      </button>
+    </div>
+
+    <p class="filter-hint">
+      • Si escribes texto se usa <strong>búsqueda por texto</strong>.
+      • Si solo hay categorías se usa <strong>filtro por categorías</strong>.
+    </p>
+  </form>
+
+
   <div class="grid">
     <!-- ====== FEED (izquierda) ====== -->
     <section class="mosaic" *ngIf="news$ | async as data">
+
+      <!-- ====== MOSAICO ====== -->
       <!-- Lead grande -->
       <a class="tile lead"
          *ngIf="data.content[0] as n"
@@ -10,7 +40,20 @@
         <div class="shade"></div>
         <div class="overlay">
           <span class="pill">{{ n.categorias || 'General' }}</span>
+
+          <!-- NUEVO: tags desde el contenido -->
+          <div class="tags-row" *ngIf="getTagsFromContent(n.contenido) as tags">
+            <span class="tag" *ngFor="let t of tags">{{ t }}</span>
+          </div>
+
+
           <h2 class="title">{{ n.titulo }}</h2>
+
+          <!-- NUEVO: snippet de contenido -->
+          <p class="snippet" *ngIf="n.contenido">
+            {{ n.contenido | slice:0:140 }}...
+          </p>
+
           <div class="meta-row">{{ n.fechaPublicado | date:'dd MMM yyyy' }}</div>
         </div>
       </a>
@@ -94,26 +137,27 @@
       <div class="meta" *ngIf="data.totalElements === 0">No hay noticias.</div>
     </section>
 
+
     <!-- ====== SIDEBAR (derecha) ====== -->
     <aside class="sidebar" aria-label="Barra lateral">
-      <!-- Categorías con filtro -->
+      <!-- Categorías con filtro (multi-select) -->
       <div class="widget">
         <h4>Categorías</h4>
         <div class="row">
           <!-- “Todas” -->
           <button type="button"
                   class="tab"
-                  [class.active]="selectedCategory() === null"
-                  (click)="selectCategory(null)">
+                  [class.active]="selectedCategories().length === 0"
+                  (click)="clearCategoryFilter()">
             Todas
           </button>
 
-          <!-- Dinámicas -->
+          <!-- Dinámicas (multi-select) -->
           <button type="button"
                   class="tab"
                   *ngFor="let c of (categories$ | async)"
-                  [class.active]="selectedCategory() === c"
-                  (click)="selectCategory(c)">
+                  [class.active]="selectedCategories().includes(c)"
+                  (click)="toggleCategory(c)">
             {{ c }}
           </button>
         </div>
@@ -126,7 +170,9 @@
           {{ now$ | async | date:'fullDate' }} — {{ now$ | async | date:'HH:mm:ss' }}
         </p>
       </div>
+
     </aside>
+
   </div>
 </main>
 

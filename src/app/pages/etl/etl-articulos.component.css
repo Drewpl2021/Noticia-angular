@@ -1,0 +1,91 @@
+/* ===== Layout general ===== */
+.etl-container {
+  padding: 1rem 0 2rem 0;
+  display: grid;
+  gap: 1rem;
+}
+
+/* ===== Card ===== */
+.card {
+  padding: 1.2rem 1.4rem;
+  border-radius: 16px;
+  background: var(--card);
+  border: var(--border);
+  box-shadow: var(--shadow);
+  display: grid;
+  gap: 1rem;
+}
+
+h2 {
+  margin: 0;
+}
+
+/* ===== Archivo ===== */
+.file-picker {
+  display: flex;
+  align-items: center;
+  gap: .75rem;
+}
+
+input[type="file"] {
+  display: none;
+}
+
+.file-name {
+  font-size: .85rem;
+  color: var(--muted);
+}
+
+/* ===== Botones ===== */
+.btn {
+  padding: .55rem 1.2rem;
+  border-radius: 999px;
+  border: var(--border);
+  background: var(--chip);
+  color: var(--txt);
+  cursor: pointer;
+  font-size: .9rem;
+}
+
+.btn.primary {
+  background: linear-gradient(135deg, var(--brand), var(--brand-2));
+  border: none;
+  color: #fff;
+}
+
+/* ===== Mensajes ===== */
+.error {
+  color: #e55353;
+  font-size: .85rem;
+}
+
+.ok {
+  color: #2ea44f;
+  font-size: .85rem;
+}
+
+/* ===== Tabla ===== */
+.analysis-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: .85rem;
+}
+
+.analysis-table th,
+.analysis-table td {
+  padding: .45rem .5rem;
+  border-bottom: 1px solid rgba(0,0,0,.08);
+}
+
+.analysis-table th {
+  text-align: left;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+/* Responsive */
+@media (max-width: 720px) {
+  .analysis-table {
+    font-size: .78rem;
+  }
+}

@@ -1,0 +1,75 @@
+<main class="ia-chat-container">
+  <section class="card chat-card">
+    <!-- Header / barra superior del chat -->
+    <header class="chat-header">
+      <div class="title-area">
+        <h2>Nova360 IA</h2>
+        <p class="muted">
+          Pregunta sobre noticias, análisis o ideas.
+        </p>
+      </div>
+      <div class="status-pill" [class.loading]="loading() || typing()">
+        <ng-container *ngIf="loading(); else notLoading">
+          ● Pensando…
+        </ng-container>
+
+        <ng-template #notLoading>
+          <ng-container *ngIf="typing(); else idle">
+            ● Escribiendo…
+          </ng-container>
+        </ng-template>
+
+        <ng-template #idle>● Listo</ng-template>
+      </div>
+
+    </header>
+
+    <!-- Mensajes -->
+    <div class="chat-body" #scrollContainer>
+      <div
+        *ngFor="let msg of messages()"
+        class="bubble-row"
+        [class.user]="msg.from === 'user'"
+        [class.bot]="msg.from === 'bot'">
+
+        <div class="avatar" *ngIf="msg.from === 'bot'">🤖</div>
+        <div class="avatar" *ngIf="msg.from === 'user'">🧑</div>
+
+        <div class="bubble">
+          <p>{{ msg.text }}</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mensaje de error -->
+    <div class="error-line" *ngIf="errorMsg()">
+      {{ errorMsg() }}
+    </div>
+
+    <!-- Input mejorado -->
+    <div class="chat-input-wrapper">
+      <div class="input-header">
+        <span class="input-title">Escribe tu solicitud</span>
+        <span class="input-hint">Enter para enviar • Shift+Enter para salto de línea</span>
+      </div>
+
+      <form class="chat-input-row" (submit)="onSubmit($event)">
+        <div class="textarea-shell">
+      <textarea
+        rows="1"
+        [formControl]="inputControl"
+        (keydown)="onKeyDown($event)"
+        placeholder="Pide un resumen, análisis de una noticia o genera ideas..."></textarea>
+        </div>
+
+        <button
+          type="submit"
+          class="btn primary send-btn"
+          [disabled]="loading() || inputControl.invalid">
+          {{ loading() ? 'Enviando...' : 'Enviar' }}
+        </button>
+      </form>
+    </div>
+
+  </section>
+</main>

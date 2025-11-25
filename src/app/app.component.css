@@ -518,3 +518,111 @@ etc.
     padding-inline: .9rem;
   }
 }
+
+
+/* Layout principal con barra izquierda, contenido y chat IA a la derecha */
+.app-layout {
+  display: flex;
+  gap: 1rem;
+  align-items: stretch;
+}
+
+/* barra lateral fija */
+.sidebar {
+  flex: 0 0 240px;
+}
+
+/* contenido principal */
+.app-content {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+/* panel de chat IA */
+.ia-chat-sidebar {
+  flex: 0 0 320px;
+  max-width: 360px;
+}
+
+/* que el chat no se pegue al borde en móvil y se apile */
+@media (max-width: 1024px) {
+  .app-layout {
+    flex-direction: column;
+  }
+
+  .sidebar {
+    flex: 0 0 auto;
+    width: 100%;
+  }
+
+  .app-content {
+    order: 1;
+  }
+
+  .ia-chat-sidebar {
+    order: 2;
+    flex: 0 0 auto;
+    max-width: 100%;
+  }
+}
+/* ==== Layout público con anuncios ==== */
+.public-layout {
+  display: grid;
+  grid-template-columns: 220px minmax(0, 1fr) 220px;
+  gap: 1rem;
+  padding: 1rem 0 2rem 0;
+}
+
+/* columnas de anuncios */
+.public-ad {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+/* tarjeta de anuncio */
+.ad-card {
+  border-radius: 16px;
+  padding: 0.9rem 1rem;
+  background: var(--card);
+  border: var(--border);
+  box-shadow: var(--shadow);
+  display: grid;
+  gap: 0.4rem;
+  font-size: 0.9rem;
+}
+
+.ad-label {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+}
+
+/* botón dentro de anuncios */
+.ad-btn {
+  margin-top: 0.2rem;
+  width: 100%;
+  border-radius: 999px;
+}
+
+/* contenido central */
+.public-content {
+  min-height: calc(100vh - 120px);
+}
+
+/* Responsive: en móvil los anuncios se ponen arriba y abajo */
+@media (max-width: 900px) {
+  .public-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .public-ad-left,
+  .public-ad-right {
+    order: 0;
+  }
+
+  .public-content {
+    order: 1;
+  }
+}

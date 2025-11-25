@@ -11,15 +11,22 @@
         {{ themeLabel }}
       </button>
 
-
+      <!-- Botón de suscripción / plan actual -->
       <button
         class="btn subscribe-btn"
         (click)="openPlanes()">
-        Suscribirme
+
+        <!-- Si está logueado y tiene plan → mostrar el plan -->
+        <ng-container *ngIf="isLoggedIn() && user() as u; else suscribirmeLabel">
+          <!-- Aquí puedes cambiar el texto como quieras -->
+          Plan: {{ u.plan || 'Sin plan' }}
+        </ng-container>
+
+        <!-- Si NO está logueado → texto normal -->
+        <ng-template #suscribirmeLabel>
+          Suscribirme
+        </ng-template>
       </button>
-
-
-
 
       <!-- Si NO está logueado → botón Iniciar sesión -->
       <button
@@ -41,13 +48,54 @@
 
         <!-- Menú desplegable -->
         <div class="user-menu" *ngIf="showUserMenu()">
-          <button type="button" (click)="goProfile()">Perfil</button>
+          <!--<button type="button" (click)="goProfile()">Perfil</button>-->
           <button type="button" (click)="logout()">Cerrar sesión</button>
         </div>
       </div>
     </div>
   </div>
 </header>
+
+<ng-template #publicLayout>
+  <main>
+    <div class="public-layout">
+      <!-- LADO IZQUIERDO: ANUNCIOS -->
+      <aside class="public-ad public-ad-left">
+        <div class="ad-card">
+          <span class="ad-label">Publicidad</span>
+          <h3>Noticias360 Free</h3>
+          <p>Lee noticias gratis. Inicia sesión para tener más funciones de análisis.</p>
+          <button class="btn ad-btn" (click)="goLogin()">Iniciar sesión</button>
+        </div>
+
+        <div class="ad-card">
+          <span class="ad-label">Anuncio</span>
+          <p>Espacio disponible para futuros banners (AdSense / afiliados).</p>
+        </div>
+      </aside>
+
+      <!-- CONTENIDO CENTRAL (rutas públicas) -->
+      <section class="public-content">
+        <router-outlet></router-outlet>
+      </section>
+
+      <!-- LADO DERECHO: ANUNCIOS -->
+      <aside class="public-ad public-ad-right">
+        <div class="ad-card">
+          <span class="ad-label">Publicidad</span>
+          <h3>Suscríbete a Premium</h3>
+          <p>Acceso a CSV, ETL y Data Smart para tus proyectos de minería de datos.</p>
+          <button class="btn ad-btn" (click)="openPlanes()">Ver planes</button>
+        </div>
+
+        <div class="ad-card">
+          <span class="ad-label">Anuncio</span>
+          <p>Aquí podrás pegar el código de Google AdSense u otra red de anuncios.</p>
+        </div>
+      </aside>
+    </div>
+  </main>
+</ng-template>
 
 <main *ngIf="isLoggedIn(); else publicLayout">
   <div class="app-layout">
@@ -58,22 +106,34 @@
       </div>
 
       <nav class="sidebar-nav">
-        <button class="sidebar-item" routerLink="/">
-          🏠 Inicio
-        </button>
-
-        <button class="sidebar-item" routerLink="noticiasp">
+        <button class="sidebar-item" routerLink="noticiasp" *ngIf="auth.isClasicoMensual() || auth.isPremiumMensual() || auth.isPremiumAnual()">
           📰 Noticias
         </button>
 
-        <button class="sidebar-item" routerLink="csvp">
+        <button class="sidebar-item" routerLink="noticiasf" *ngIf="auth.isPlanFree() ">
+          📰 Noticias
+        </button>
+        <button class="sidebar-item" routerLink="noticiasc" *ngIf="auth.isAdmin()">
+          📰 Noticias
+        </button>
+        <button class="sidebar-item" routerLink="csvp" *ngIf="auth.isAdmin() || auth.isPremiumMensual() || auth.isPremiumAnual()">
+          📇 CSV
+        </button>
+        <button class="sidebar-item" routerLink="csvc" *ngIf="auth.isClasicoMensual()">
           📇 CSV
         </button>
 
-        <button class="sidebar-item" routerLink="crearNoticia">
+        <button class="sidebar-item" routerLink="crearNoticia" *ngIf="auth.isClasicoMensual() || auth.isPremiumMensual() || auth.isPremiumAnual() ||auth.isAdmin()">
           🆕 Crear Noticia
         </button>
 
+        <button class="sidebar-item" routerLink="etl" *ngIf="auth.isAdmin() || auth.isPremiumMensual() || auth.isPremiumAnual()">
+          🧽 Limpieza de datos (ETL)
+        </button>
+
+        <button class="sidebar-item" routerLink="datamart" *ngIf="auth.isAdmin() || auth.isPremiumMensual() || auth.isPremiumAnual()">
+          🧠 Data inteligente
+        </button>
 
         <button class="sidebar-item" routerLink="aprobar" *ngIf="auth.isAdmin()">
           🛎️ Solicitudes
@@ -99,6 +159,11 @@
     <section class="app-content">
       <router-outlet></router-outlet>
     </section>
+
+    <!-- CHAT IA SIEMPRE PRESENTE -->
+    <aside class="ia-chat-sidebar">
+      <app-ia-chat></app-ia-chat>
+    </aside>
   </div>
 </main>
 

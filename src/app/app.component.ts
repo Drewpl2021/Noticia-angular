@@ -5,11 +5,12 @@ import {AuthService} from "./core/services/auth.service";
 import {CommonModule} from "@angular/common";
 import {Producto} from "./core/models/producto.model";
 import {ProductoService} from "./core/services/producto.service";
+import { IaChatComponent } from './pages/ia-chat/ia-chat.component';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet,RouterLink,CommonModule],
+  imports: [RouterOutlet,RouterLink,CommonModule,IaChatComponent],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })

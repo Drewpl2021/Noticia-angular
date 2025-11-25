@@ -30,23 +30,34 @@ export class HomeComponent {
   loading = true;
   errorMsg: string | null = null;
 
+  // paginación
   page = signal(0);
   size = signal(6);
   totalPages = signal(0);
 
+  // categoría seleccionada (una sola)
   selectedCategory = signal<string | null>(null);
 
+  // categorías desde backend
   categories$ = this.api.categories().pipe(
     catchError(() => of<string[]>([]))
   );
 
+  // noticias: si hay categoría → byCategories; si no → list normal
   news$ = combineLatest([
     toObservable(this.page),
     toObservable(this.selectedCategory)
   ]).pipe(
     switchMap(([p, cat]) => {
       this.loading = true;
-      return this.api.list({ page: p, size: this.size(), categoria: cat ?? undefined }).pipe(
+      const size = this.size();
+      const hasCategory = !!cat && cat.trim().length > 0;
+
+      const req$ = hasCategory
+        ? this.api.byCategories([cat], p, size)
+        : this.api.list({ page: p, size });
+
+      return req$.pipe(
         tap(res => {
           this.totalPages.set(res.totalPages);
           this.loading = false;
@@ -61,7 +72,7 @@ export class HomeComponent {
             totalElements: 0,
             totalPages: 0,
             size: this.size(),
-            number: p      // 👈 usamos "number", NO "page"
+            number: p
           };
 
           return of(empty);
@@ -70,9 +81,10 @@ export class HomeComponent {
     })
   );
 
-
+  // tendencias (si las usas en otro lado)
   trends$ = this.api.trending().pipe(catchError(() => of([])));
 
+  // newsletter
   email = new FormControl('', [Validators.required, Validators.email]);
 
   submitNewsletter() {
@@ -86,12 +98,14 @@ export class HomeComponent {
     });
   }
 
+  // ====== Filtro de categoría (single) ======
   selectCategory(cat: string | null) {
     if (this.selectedCategory() === cat) return;
     this.selectedCategory.set(cat);
-    this.page.set(0);
+    this.page.set(0); // reinicia a la primera página
   }
 
+  // ====== Paginación ======
   goTo(p: number) {
     const last = Math.max(0, this.totalPages() - 1);
     const next = Math.min(Math.max(0, p), last);
@@ -116,6 +130,7 @@ export class HomeComponent {
     return arr;
   }
 
+  // reloj
   now$ = interval(1000).pipe(
     startWith(0),
     map(() => new Date())

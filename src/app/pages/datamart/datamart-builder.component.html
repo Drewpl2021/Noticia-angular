@@ -1,0 +1,149 @@
+<main class="datamart-container">
+
+  <!-- === Card 1: Archivo + análisis === -->
+  <section class="card">
+    <h2>Generador de DataMart</h2>
+    <p class="muted">
+      Sube un archivo CSV, identifica dimensiones y medidas, y construye un DataMart
+      automático en tu base de datos.
+    </p>
+
+    <!-- Archivo -->
+    <div class="file-row">
+      <input type="file"
+             id="csvFile"
+             accept=".csv"
+             (change)="onFileChange($event)">
+
+      <label for="csvFile" class="btn">
+        Seleccionar CSV
+      </label>
+
+      <span class="file-name">{{ fileName() }}</span>
+    </div>
+
+    <!-- Nombre del DataMart -->
+    <div class="field">
+      <label for="dmName">Nombre del DataMart</label>
+      <input id="dmName"
+             type="text"
+             [value]="datamartName()"
+             (input)="onNameChange($event)"
+             placeholder="ej. ventas_clientes">
+      <small class="hint">
+        Se usará como prefijo de tablas (ej: dm_ventas_clientes_dim_city, dm_ventas_clientes_fact).
+      </small>
+    </div>
+
+    <div class="actions">
+      <button class="btn primary"
+              (click)="analizar()"
+              [disabled]="loading() || !selectedFile">
+        {{ loading() ? 'Analizando...' : 'Analizar CSV' }}
+      </button>
+    </div>
+
+    <div class="status-line">
+      <span class="error" *ngIf="errorMsg()">{{ errorMsg() }}</span>
+      <span class="ok" *ngIf="successMsg()">{{ successMsg() }}</span>
+    </div>
+  </section>
+
+  <!-- === Card 2: Resultados del análisis === -->
+  <section class="card" *ngIf="analysis() as a">
+    <h3>Resultados del análisis</h3>
+
+    <p class="muted">
+      Filas totales: <strong>{{ a.totalRows }}</strong>.
+      Selecciona de <strong>1 a 5 dimensiones</strong> y las medidas que quieras incluir.
+    </p>
+
+    <div class="grid-2">
+      <!-- Dimensiones -->
+      <div class="panel">
+        <h4>Dimensiones candidatas</h4>
+        <table class="dm-table">
+          <thead>
+          <tr>
+            <th>#</th>
+            <th>Columna</th>
+            <th>Valores únicos</th>
+            <th>% Distintos</th>
+            <th>Ejemplos</th>
+            <th>Dim.</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let d of dimensionCandidates; let i = index">
+            <td>{{ i + 1 }}</td>
+            <td>
+              {{ d.name }}
+              <span *ngIf="d.suggested" class="badge badge-suggested">Sugerida</span>
+            </td>
+            <td>{{ d.distinctCount }}</td>
+            <td>{{ (d.distinctRatio * 100) | number:'1.0-2' }}%</td>
+            <td class="sample">
+              <span class="pill" *ngFor="let v of d.sampleValues | slice:0:3">
+                {{ v }}
+              </span>
+            </td>
+            <td>
+              <input type="checkbox"
+                     [checked]="selectedDims.has(d.name)"
+                     (change)="toggleDim(d.name, $event)">
+            </td>
+          </tr>
+          </tbody>
+        </table>
+        <small class="hint">
+          Recomendado: entre 1 y 5 dimensiones.
+        </small>
+      </div>
+
+      <!-- Medidas -->
+      <div class="panel">
+        <h4>Medidas candidatas</h4>
+        <table class="dm-table">
+          <thead>
+          <tr>
+            <th>#</th>
+            <th>Columna</th>
+            <th>No nulos</th>
+            <th>% Numérico</th>
+            <th>Medida</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let m of measureCandidates; let i = index">
+            <td>{{ i + 1 }}</td>
+            <td>
+              {{ m.name }}
+              <span *ngIf="m.suggested" class="badge badge-suggested">Sugerida</span>
+            </td>
+            <td>{{ m.nonNullCount }}</td>
+            <td>{{ (m.numericRatio * 100) | number:'1.0-2' }}%</td>
+            <td>
+              <input type="checkbox"
+                     [checked]="selectedMeasures.has(m.name)"
+                     (change)="toggleMeasure(m.name, $event)">
+            </td>
+          </tr>
+          </tbody>
+        </table>
+        <small class="hint">
+          Marca las métricas que quieras analizar (ingresos, montos, conteos, etc.).
+        </small>
+      </div>
+    </div>
+
+    <div class="actions end">
+      <button class="btn primary"
+              (click)="construir()"
+              [disabled]="loading()">
+        {{ loading() ? 'Construyendo DataMart...' : 'Construir DataMart' }}
+      </button>
+    </div>
+
+  </section>
+
+</main>
